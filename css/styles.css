@@ -1,0 +1,148 @@
+body
+{
+	background: #666;
+	margin-top: 30px;
+	padding: 0;
+	background: url('../assets/main_bcg.gif');
+    font-family: arial,serif;
+    color: #000;
+    font-size: 12px;
+}
+
+button
+{
+    font-family: arial,serif;
+    font-size: 12px;
+}
+
+#container
+{
+	width:640px;
+	height: 480px;
+	border: 2px solid #ccc;
+	background: white;
+    float:left;
+    cursor: crosshair;
+}
+
+#control-panel
+{
+    width:1000px;
+   	margin: 0 auto;
+}
+#control-panel > div
+{
+    margin:5px;
+}
+#control-panel .box
+{
+    float:right;
+    width: 320px;
+    border: 2px solid #ccc;
+}
+
+#control-panel .box .box-content
+{
+    background: #fff;
+    overflow-y: auto;
+    padding: 5px;
+    position: relative;
+}
+
+#control-panel .box > h2
+{
+    background: #6EA3FF;
+    color: #fff;
+    padding:5px;
+}
+
+#control-panel td
+{
+    padding:2px 5px;
+}
+
+#control-panel th {
+    padding:5px 5px;
+    text-align: left;
+    border-bottom: 1px solid gray;
+}
+
+#control-panel ul label
+{
+    font-weight: bold;
+    display: block
+}
+
+#control-panel ul input
+{
+    width: 100%
+}
+
+#control-panel ul li
+{
+    margin: 10px 0;
+}
+
+#control-panel h3
+{
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 0;
+    
+}
+
+#control-panel .hint
+{
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#control-panel .stage
+{
+    display:none;
+}
+
+#control-panel .stage.current
+{
+    display:block;
+}
+
+#prevConf
+{
+    position: absolute;
+    bottom:0;
+    left:0;
+}
+
+#nextConf
+{
+    position: absolute;
+    bottom:0;
+    right:0;
+}
+
+#config .box-content
+{
+    height: 235px;
+}
+
+
+#logs .box-content
+{
+    height: 110px;
+}
+
+#logs table
+{
+    width: 100%;
+}
+
+#logs table .message
+{
+    width: 70%
+}
+
+#logs table .time
+{
+    width: 30%
+}

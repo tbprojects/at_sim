@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+	<title>AT Simulator</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+	<link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/vendor/sylvester.js"></script>
+    <script src="js/vendor/kinetic.min.js"></script>
+    <script src="js/vendor/graph.js"></script>
+    <script src="js/vendor/astar.js"></script>
+    <script src="js/lib/control.js"></script>
+    <script src="js/lib/sound.js"></script>
+    <script src="js/app/game.js"></script>
+    <script src="js/app/map.js"></script>
+    <script src="js/app/wall.js"></script>
+    <script src="js/app/entity.js"></script>
+    <script src="js/app/terrorist.js"></script>
+    <script src="js/app/antiterrorist.js"></script>
+	<script>
+		window.onload = function() {
+			Game.init();
+		};	
+	</script>
+  </head>
+  <body>
+    <div id="control-panel">
+
+        <div id="container"></div>
+
+        <div class="box" id="about">
+            <h2>Storming the Stronghold Simulator</h2>
+            <div class="box-content">
+                <p class="">Author: Tomasz Borowski</p>
+
+            </div>
+        </div>
+
+        <div class="box" id="config">
+            <h2>Config</h2>
+            <div class="box-content">
+                <div data-ui-state="config decision" class="stage current">
+                    <h3>Define situation</h3>
+                    <p class="hint">
+                        Here you can load previously saved configuration.<br/>
+                        If you want to create new one, then press "Next"
+                    </p>
+                    <ul>
+                        <li>
+                            <label>Load config</label>
+                            <select id="load_config_name" style="width: 250px"></select>
+                            <button onclick="GameControl.loadConfig()">Load</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div data-ui-state="draw map" class="stage">
+                    <h3>(Step 1/4) Draw walls</h3>
+                    <p class="hint">
+                        Hold left mouse button to start drawing the wall.<br/>
+                        Release mouse button to finish drawing the wall.<br/>
+                        You can draw only straight walls.
+                    </p>
+                    <ul>
+                        <li>
+                            <label>Remove last wall</label>
+                            <button onclick="GameControl.removeLastWall()">Remove</button>
+                        </li>
+                        <li>
+                            <label>Clear all walls</label>
+                            <button onclick="GameControl.clearWalls()">Clear</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div data-ui-state="draw zone" class="stage">
+                    <h3>(Step 2/4) Set antiterrorist spawn zone</h3>
+                    <p class="hint">
+                        Press left mouse button to set spawn zone for antiterrorists.
+                        The zone can not overlap the walls.
+                    </p>
+                    <ul>
+                        <li>
+                            <label>Remove spawn zone</label>
+                            <button onclick="GameControl.removeSpawnZone()" disabled>Remove</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div data-ui-state="draw keypoints" class="stage">
+                    <h3>(Step 3/4) Set keypoints</h3>
+                    <p class="hint">
+                        Press left mouse button to set keypoint.<br/>
+                        Terrorists will be spawned near keypoints.<br/>
+                        Keypoints define assult path for antiterrorists.<br/>
+                    </p>
+                    <ul>
+                        <li>
+                            <label>Remove last keypoint</label>
+                            <button onclick="GameControl.removeLastKeypoint()" disabled>Remove</button>
+                        </li>
+                        <li>
+                            <label>Clear all keypoints</label>
+                            <button onclick="GameControl.clearKeypoints()" disabled>Clear</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div data-ui-state="config numbers" class="stage">
+                    <h3>(Step 4/4) Set parameters</h3>
+                    <p class="hint">
+                        Fill following parameters. Then press next to finalize your config.
+                    </p>
+                    <ul>
+                        <li>
+                            <label>Number of Antiterrorists</label>
+                            <input type="number" id="antiterrorists_count" value="5"/>
+                        </li>
+                        <li>
+                            <label>Number of Terrorists</label>
+                            <input type="number" id="terrorists_count" value="5"/>
+                        </li>
+                        <li>
+                            <label>Time limit (seconds)</label>
+                            <input type="number" id="time_limit" value="60"/>
+                        </li>
+                    </ul>
+                </div>
+
+                <div data-ui-state="control simulation" class="stage">
+                    <h3>Config finished</h3>
+                    <p class="hint">
+                        You are ready to start simulation.
+                    </p>
+                    <ul>
+                        <li>
+                            <label>Save current config</label>
+                            <input type="text" id="new_config_name" size="28" style="width:auto">
+                            <button onclick="GameControl.saveConfig()">Save</button>
+                        </li>
+                        <li>
+                            <label>Simulation control</label>
+                            <button onclick="GameControl.startSim()" disabled>Start</button>
+                            <button onclick="GameControl.pauseSim()" disabled>Pause</button>
+                            <button onclick="GameControl.stopSim()" disabled>Stop</button>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <button id="prevConf" onclick="GameControl.previousConfig()" disabled>Previous step</button>
+                <button id="nextConf" onclick="GameControl.nextConfig()">Next step</button>
+            </div>
+        </div>
+
+        <div class="box" id="logs">
+            <h2>Logs</h2>
+            <div class="box-content">
+                <table>
+                <thead><tr><th class="message">Message</th><th class="time">Time</th></tr></thead>
+                <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+  </body>
+</html>
