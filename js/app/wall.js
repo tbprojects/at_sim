@@ -1,15 +1,16 @@
 Game.Wall = Kinetic.Line.extend({
+    valid: false,
+
     defaultConfig: {
         stroke: 'black',
         strokeWidth: Game.mapDensity,
         lineCap: 'round',
-        draggable: true
+        listening: false
     },
 
 	init: function(config){
         this.setDefaultAttrs(this.defaultConfig);
         this._super(config || {});
-        this.valid = false;
         return this;
 	},
     getStartPoint: function(){

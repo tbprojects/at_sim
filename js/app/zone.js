@@ -3,7 +3,8 @@ Game.Zone = Kinetic.Circle.extend({
         radius:40,
         fill: 'green',
         alpha: 0.5,
-        visible: false
+        visible: false,
+        listening: false
     },
 
 	init: function(config){

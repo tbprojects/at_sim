@@ -29,10 +29,10 @@ GameControl = {
         Game.map.removeZone();
     },
     removeLastKeypoint: function() {
-
+        Game.map.removeLastKeypoint();
     },
     clearKeypoints: function() {
-
+        Game.map.clearKeypoints();
     },
     nextConfig: function(){
         $('.stage.current').removeClass('current').next('.stage').addClass('current');

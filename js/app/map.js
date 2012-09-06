@@ -3,6 +3,7 @@ Game.Map = Kinetic.Rect.extend({
     graph: null,
     zone: null,
     zoneDraft: null,
+    newKeypoint: null,
     walls: [],
     keypoints: [],
 
@@ -18,6 +19,7 @@ Game.Map = Kinetic.Rect.extend({
         this._buildGraph();
         this._bindEvents();
         this._buildZoneDraft();
+        this._buildKeypoint();
         return this;
 	},
     removeLastWall: function() {
@@ -32,6 +34,18 @@ Game.Map = Kinetic.Rect.extend({
             this.removeLastWall();
         }
     },
+    removeLastKeypoint: function() {
+        var keypoint = this.keypoints.pop();
+        if (keypoint) {
+            Game.mapObjects.remove(keypoint);
+            this.newKeypoint.setText((this.keypoints.length+1).toString());
+        }
+    },
+    clearKeypoints: function(){
+        while(this.keypoints.length > 0) {
+            this.removeLastKeypoint();
+        }
+    },
     removeZone: function(){
         if (this.zone){
             Game.mapObjects.remove(this.zone);
@@ -43,7 +57,7 @@ Game.Map = Kinetic.Rect.extend({
         this.on("mousedown", function() {
             switch(Game.uiState) {
                 case 'draw map':
-                    self._initWall();
+                    self._initWall(); break;
             }
         });
         this.on("mousemove", function() {
@@ -52,6 +66,8 @@ Game.Map = Kinetic.Rect.extend({
                     self._updateWall(); break;
                 case 'draw zone':
                     self._updateDraftZone(); break;
+                case 'draw keypoints':
+                    self._updateNewKeypoint(); break;
             }
         });
         this.on("mouseup", function() {
@@ -60,18 +76,24 @@ Game.Map = Kinetic.Rect.extend({
                     self._addWall(); break;
                 case 'draw zone':
                     self._setZone(); break;
+                case 'draw keypoints':
+                    self._addKeypoint(); break;
             }
         });
         this.on("mouseout", function() {
             switch(Game.uiState) {
                 case 'draw zone':
                     self._hideDraftZone(); break;
+                case 'draw keypoints':
+                    self._hideNewKeypoint(); break;
             }
         });
         this.on("mouseover", function() {
             switch(Game.uiState) {
                 case 'draw zone':
                     self._showDraftZone(); break;
+                case 'draw keypoints':
+                    self._showNewKeypoint(); break;
             }
         });
     },
@@ -90,14 +112,16 @@ Game.Map = Kinetic.Rect.extend({
             Game.mapObjects.add(new Kinetic.Line({
               points: [x, 0, x, this.getHeight()],
               stroke: "black",
-              strokeWidth: 0.2
+              strokeWidth: 0.2,
+              listening: false
             }));
         }
         for (var y= Game.mapDensity; y < this.getHeight(); y += Game.mapDensity) {
             Game.mapObjects.add(new Kinetic.Line({
               points: [0, y, this.getWidth(), y],
               stroke: "black",
-              strokeWidth: 0.2
+              strokeWidth: 0.2,
+              listening: false
             }));
         }
     },
@@ -147,11 +171,16 @@ Game.Map = Kinetic.Rect.extend({
         this.zoneDraft = new Game.Zone();
         Game.mapObjects.add(this.zoneDraft);
     },
+    _buildKeypoint: function(){
+        this.newKeypoint = new Game.Keypoint({
+            text: (this.keypoints.length+1).toString()
+        });
+        Game.mapObjects.add(this.newKeypoint);
+    },
     _showDraftZone: function(){
         if (!this.zone) {
             this.zoneDraft.show();
         }
-
     },
     _hideDraftZone: function(){
         if (!this.zone) {
@@ -175,5 +204,25 @@ Game.Map = Kinetic.Rect.extend({
             var pos = Game.stage.getMousePosition();
             this.zoneDraft.setPosition(pos.x,pos.y);
         }
+    },
+    _addKeypoint: function(){
+        if (this.newKeypoint.valid) {
+            this.newKeypoint.setTextFill('blue');
+            this.keypoints.push(this.newKeypoint);
+            this._buildKeypoint();
+            this._updateNewKeypoint();
+            this._showNewKeypoint();
+        }
+    },
+    _showNewKeypoint: function(){
+        this.newKeypoint.show();
+    },
+    _hideNewKeypoint: function(){
+        this.newKeypoint.hide();
+    },
+    _updateNewKeypoint: function(){
+        var pos = Game.stage.getMousePosition();
+        this.newKeypoint.updatePosition(pos.x,pos.y);
     }
+
 });
