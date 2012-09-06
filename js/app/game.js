@@ -10,6 +10,10 @@ Game = {
     mapObjects: new Kinetic.Layer(),
 	state: 'init',
 
+    antiterroristsCount: 5,
+    terroristsCount: 5,
+    timeLimit: 60,
+
 	init: function() {
 		var self = this;
 		this.stage = new Kinetic.Stage({

@@ -15,6 +15,11 @@ button
     font-size: 12px;
 }
 
+.hidden
+{
+    display:none;
+}
+
 #container
 {
 	width:640px;
@@ -119,6 +124,11 @@ button
     position: absolute;
     bottom:0;
     right:0;
+}
+
+#error_page ul li
+{
+    color: red;
 }
 
 #config .box-content

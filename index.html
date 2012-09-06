@@ -129,24 +129,33 @@
                 </div>
 
                 <div data-ui-state="control simulation" class="stage">
-                    <h3>Config finished</h3>
-                    <p class="hint">
-                        You are ready to start simulation.
-                    </p>
-                    <ul>
-                        <li>
-                            <label for="new_config_name">Save current config</label>
-                            <input type="text" id="new_config_name" size="28" style="width:auto">
-                            <button onclick="GameControl.saveConfig()">Save</button>
-                        </li>
-                        <li>
-                            <label>Simulation control</label>
-                            <button onclick="GameControl.startSim()" disabled>Start</button>
-                            <button onclick="GameControl.pauseSim()" disabled>Pause</button>
-                            <button onclick="GameControl.stopSim()" disabled>Stop</button>
-                        </li>
-
-                    </ul>
+                    <div id="error_page">
+                        <h3>Config not finished</h3>
+                        <p class="hint">
+                            Simulation is not ready for following reasons
+                        </p>
+                        <ul>
+                        </ul>
+                    </div>
+                    <div id="control_page">
+                        <h3>Config finished</h3>
+                        <p class="hint">
+                            You are ready to start simulation.
+                        </p>
+                        <ul>
+                            <li>
+                                <label for="new_config_name">Save current config</label>
+                                <input type="text" id="new_config_name" size="28" style="width:auto">
+                                <button onclick="GameControl.saveConfig()">Save</button>
+                            </li>
+                            <li>
+                                <label>Simulation control</label>
+                                <button onclick="GameControl.startSim()">Start</button>
+                                <button onclick="GameControl.pauseSim()">Pause</button>
+                                <button onclick="GameControl.stopSim()">Stop</button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <button id="prevConf" onclick="GameControl.previousConfig()" disabled>Previous step</button>
