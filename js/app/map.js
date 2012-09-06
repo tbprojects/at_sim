@@ -2,6 +2,7 @@ Game.Map = Kinetic.Rect.extend({
     newWall: null,
     graph: null,
     zone: null,
+    zoneDraft: null,
     walls: [],
     keypoints: [],
 
@@ -16,6 +17,7 @@ Game.Map = Kinetic.Rect.extend({
         this._buildGrid();
         this._buildGraph();
         this._bindEvents();
+        this._buildZoneDraft();
         return this;
 	},
     removeLastWall: function() {
@@ -30,22 +32,47 @@ Game.Map = Kinetic.Rect.extend({
             this.removeLastWall();
         }
     },
+    removeZone: function(){
+        if (this.zone){
+            Game.mapObjects.remove(this.zone);
+            this.zone = null;
+        }
+    },
     _bindEvents: function(){
         var self = this;
         this.on("mousedown", function() {
-            self.newWall = new Game.Wall();
-            Game.mapObjects.add(self.newWall);
-            var pos = Game.stage.getMousePosition();
-            self.newWall.setStartPoint(pos.x, pos.y);
+            switch(Game.uiState) {
+                case 'draw map':
+                    self._initWall();
+            }
         });
         this.on("mousemove", function() {
-            if (self.newWall) {
-                var pos = Game.stage.getMousePosition();
-                self.newWall.setEndPoint(pos.x, pos.y);
+            switch(Game.uiState) {
+                case 'draw map':
+                    self._updateWall(); break;
+                case 'draw zone':
+                    self._updateDraftZone(); break;
             }
         });
         this.on("mouseup", function() {
-            self._addWall();
+            switch(Game.uiState) {
+                case 'draw map':
+                    self._addWall(); break;
+                case 'draw zone':
+                    self._setZone(); break;
+            }
+        });
+        this.on("mouseout", function() {
+            switch(Game.uiState) {
+                case 'draw zone':
+                    self._hideDraftZone(); break;
+            }
+        });
+        this.on("mouseover", function() {
+            switch(Game.uiState) {
+                case 'draw zone':
+                    self._showDraftZone(); break;
+            }
         });
     },
     _buildGraph: function(){
@@ -74,6 +101,18 @@ Game.Map = Kinetic.Rect.extend({
             }));
         }
     },
+    _initWall:function() {
+        this.newWall = new Game.Wall();
+        Game.mapObjects.add(this.newWall);
+        var pos = Game.stage.getMousePosition();
+        this.newWall.setStartPoint(pos.x, pos.y);
+    },
+    _updateWall:function(){
+        if (this.newWall) {
+            var pos = Game.stage.getMousePosition();
+            this.newWall.setEndPoint(pos.x, pos.y);
+        }
+    },
     _addWall: function() {
         if (this.newWall.valid) {
             this.newWall.setStroke('black');
@@ -85,11 +124,12 @@ Game.Map = Kinetic.Rect.extend({
         this.newWall = null;
     },
     _updateWallOnGraph: function(wall, state){
+        var i;
         if (wall.isVertical()) {
             var startY = wall.getStartPoint().y/Game.mapDensity-1;
             var endY = wall.getEndPoint().y/Game.mapDensity+1;
             var x = wall.getStartPoint().x/Game.mapDensity;
-            for (var i=startY; i<endY; i+=1) {
+            for (i=startY; i<endY; i+=1) {
                 this.graph.nodes[x][i].type = state;
                 this.graph.nodes[x-1][i].type = state;
             }
@@ -97,10 +137,43 @@ Game.Map = Kinetic.Rect.extend({
             var startX = wall.getStartPoint().x/Game.mapDensity-1;
             var endX = wall.getEndPoint().x/Game.mapDensity+1;
             var y = wall.getStartPoint().y/Game.mapDensity;
-            for (var i=startX; i<endX; i+=1) {
+            for (i=startX; i<endX; i+=1) {
                 this.graph.nodes[i][y].type = state;
                 this.graph.nodes[i][y-1].type = state;
             }
+        }
+    },
+    _buildZoneDraft: function(){
+        this.zoneDraft = new Game.Zone();
+        Game.mapObjects.add(this.zoneDraft);
+    },
+    _showDraftZone: function(){
+        if (!this.zone) {
+            this.zoneDraft.show();
+        }
+
+    },
+    _hideDraftZone: function(){
+        if (!this.zone) {
+            this.zoneDraft.hide();
+        }
+    },
+    _setZone: function(){
+        if (!this.zone) {
+            this._hideDraftZone();
+            this.zone = new Game.Zone({
+                x:this.zoneDraft.getX(),
+                y: this.zoneDraft.getY(),
+                alpha: 0.8,
+                visible: true
+            });
+            Game.mapObjects.add(this.zone);
+        }
+    },
+    _updateDraftZone: function(){
+        if (!this.zone) {
+            var pos = Game.stage.getMousePosition();
+            this.zoneDraft.setPosition(pos.x,pos.y);
         }
     }
 });

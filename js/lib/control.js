@@ -26,7 +26,7 @@ GameControl = {
         Game.map.clearWalls();
     },
     removeSpawnZone: function() {
-
+        Game.map.removeZone();
     },
     removeLastKeypoint: function() {
 

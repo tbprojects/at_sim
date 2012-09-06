@@ -14,6 +14,7 @@
     <script src="js/app/game.js"></script>
     <script src="js/app/map.js"></script>
     <script src="js/app/wall.js"></script>
+    <script src="js/app/zone.js"></script>
     <script src="js/app/entity.js"></script>
     <script src="js/app/terrorist.js"></script>
     <script src="js/app/antiterrorist.js"></script>
@@ -47,7 +48,7 @@
                     </p>
                     <ul>
                         <li>
-                            <label>Load config</label>
+                            <label for="load_config_name">Load config</label>
                             <select id="load_config_name" style="width: 250px"></select>
                             <button onclick="GameControl.loadConfig()">Load</button>
                         </li>
@@ -77,12 +78,11 @@
                     <h3>(Step 2/4) Set antiterrorist spawn zone</h3>
                     <p class="hint">
                         Press left mouse button to set spawn zone for antiterrorists.
-                        The zone can not overlap the walls.
                     </p>
                     <ul>
                         <li>
                             <label>Remove spawn zone</label>
-                            <button onclick="GameControl.removeSpawnZone()" disabled>Remove</button>
+                            <button onclick="GameControl.removeSpawnZone()">Remove</button>
                         </li>
                     </ul>
                 </div>
@@ -113,15 +113,15 @@
                     </p>
                     <ul>
                         <li>
-                            <label>Number of Antiterrorists</label>
+                            <label for="antiterrorists_count">Number of Antiterrorists</label>
                             <input type="number" id="antiterrorists_count" value="5"/>
                         </li>
                         <li>
-                            <label>Number of Terrorists</label>
+                            <label for="terrorists_count">Number of Terrorists</label>
                             <input type="number" id="terrorists_count" value="5"/>
                         </li>
                         <li>
-                            <label>Time limit (seconds)</label>
+                            <label for="time_limit">Time limit (seconds)</label>
                             <input type="number" id="time_limit" value="60"/>
                         </li>
                     </ul>
@@ -134,7 +134,7 @@
                     </p>
                     <ul>
                         <li>
-                            <label>Save current config</label>
+                            <label for="new_config_name">Save current config</label>
                             <input type="text" id="new_config_name" size="28" style="width:auto">
                             <button onclick="GameControl.saveConfig()">Save</button>
                         </li>
