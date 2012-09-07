@@ -41,6 +41,7 @@ GameControl = {
         if ($('.stage.current').next('.stage').length == 0) $('#nextConf').attr('disabled','disabled');
         $('#prevConf').removeAttr('disabled');
         Game.uiState = $('.stage.current').attr('data-ui-state');
+        this._updateCursor();
     },
     previousConfig: function(){
         this._updateNumberData();
@@ -49,6 +50,14 @@ GameControl = {
         if ($('.stage.current').prev('.stage').length == 0) $('#prevConf').attr('disabled','disabled');
         $('#nextConf').removeAttr('disabled');
         Game.uiState = $('.stage.current').attr('data-ui-state');
+        this._updateCursor();
+    },
+    _updateCursor: function(){
+        if (['draw zone', 'draw keypoints'].indexOf(Game.uiState) != -1) {
+            $('#container').css('cursor', 'none');
+        } else {
+            $('#container').css('cursor', 'crosshair');
+        }
     },
     _updateNumberData: function(){
         Game.antiterroristsCount = parseInt($('#antiterrorists_count').val());
