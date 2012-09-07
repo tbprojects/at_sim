@@ -153,7 +153,7 @@ Game.Map = Kinetic.Rect.extend({
             var startY = wall.getStartPoint().y/Game.mapDensity-1;
             var endY = wall.getEndPoint().y/Game.mapDensity+1;
             var x = wall.getStartPoint().x/Game.mapDensity;
-            for (i=startY; i<endY; i+=1) {
+            for (i=Math.min(startY,endY); i<Math.max(startY,endY); i+=1) {
                 this.graph.nodes[x][i].type = state;
                 this.graph.nodes[x-1][i].type = state;
             }
@@ -161,7 +161,7 @@ Game.Map = Kinetic.Rect.extend({
             var startX = wall.getStartPoint().x/Game.mapDensity-1;
             var endX = wall.getEndPoint().x/Game.mapDensity+1;
             var y = wall.getStartPoint().y/Game.mapDensity;
-            for (i=startX; i<endX; i+=1) {
+            for (i=Math.min(startX,endX); i<Math.max(startX,endX); i+=1) {
                 this.graph.nodes[i][y].type = state;
                 this.graph.nodes[i][y-1].type = state;
             }
