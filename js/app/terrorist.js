@@ -9,10 +9,18 @@ Game.Terrorist = Game.Entity.extend({
         draggable: true,
         name: 'terrorist'
     },
-
+    closestSeenOpponent: function(){
+        //TODO: temporary solution for testing
+        return Game.entities.get('.antiterrorist')[0];
+    },
     think: function(){
         switch(this.currentState) {
             case 'idle':
+                var opponent = this.closestSeenOpponent();
+                if (opponent) {
+                    this.setTargetEntity(opponent);
+//                    this.avoid();
+                }
                 break;
             case 'seek':
                 this.seek();

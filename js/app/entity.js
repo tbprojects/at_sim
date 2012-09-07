@@ -24,6 +24,7 @@ Game.Entity = Kinetic.Image.extend({
         var image = new Image();
         image.src = this.imageSrc;
         this.setImage(image);
+        this.setOffset(this.getWidth()/2, this.getHeight()/2);
         return this;
 	},
     setTarget: function(x,y) {
@@ -51,6 +52,8 @@ Game.Entity = Kinetic.Image.extend({
    		this.think();
         var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
         this.setPosition(pos.e(1),pos.e(2));
+        var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
+        this.setRotation(rot);
    	},
     changeState: function(state) {
         this.currentState = state;
@@ -68,15 +71,6 @@ Game.Entity = Kinetic.Image.extend({
         var y = Math.sin(theta) * radius * length;
         var pos = center.add($V([x,y]));
         this.setPosition(pos.e(1), pos.e(2));
-    },
-    closestSeenOpponent: function(){
-        for (i in Game.getEntities()) {
-            var entity = Game.getEntities()[i];
-            if (this != entity) {
-                return entity;
-            }
-        }
-        return null;
     },
     isInCollision: function(){
         var x = Math.round(this.getX()/Game.mapDensity);
