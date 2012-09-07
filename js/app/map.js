@@ -27,7 +27,7 @@ Game.Map = Kinetic.Rect.extend({
         var wall = this.walls.pop();
         if (wall) {
             this._updateWallOnGraph(wall, GraphNodeType.OPEN);
-            Game.mapObjects.remove(wall);
+            Game.configObjects.remove(wall);
         }
     },
     clearWalls: function(){
@@ -38,7 +38,7 @@ Game.Map = Kinetic.Rect.extend({
     removeLastKeypoint: function() {
         var keypoint = this.keypoints.pop();
         if (keypoint) {
-            Game.mapObjects.remove(keypoint);
+            Game.configObjects.remove(keypoint);
             this.newKeypoint.setText((this.keypoints.length+1).toString());
         }
     },
@@ -49,7 +49,7 @@ Game.Map = Kinetic.Rect.extend({
     },
     removeZone: function(){
         if (this.zone){
-            Game.mapObjects.remove(this.zone);
+            Game.configObjects.remove(this.zone);
             this.zone = null;
         }
     },
@@ -122,7 +122,7 @@ Game.Map = Kinetic.Rect.extend({
     },
     _initWall:function() {
         this.newWall = new Game.Wall();
-        Game.mapObjects.add(this.newWall);
+        Game.configObjects.add(this.newWall);
         var pos = Game.stage.getMousePosition();
         this.newWall.setStartPoint(pos.x, pos.y);
     },
@@ -138,7 +138,7 @@ Game.Map = Kinetic.Rect.extend({
             this.walls.push(this.newWall);
             this._updateWallOnGraph(this.newWall, GraphNodeType.WALL);
         } else {
-            Game.mapObjects.remove(this.newWall);
+            Game.configObjects.remove(this.newWall);
         }
         this.newWall = null;
     },
@@ -191,7 +191,7 @@ Game.Map = Kinetic.Rect.extend({
                 alpha: 0.8,
                 visible: true
             });
-            Game.mapObjects.add(this.zone);
+            Game.configObjects.add(this.zone);
         }
     },
     _updateDraftZone: function(){
@@ -204,6 +204,8 @@ Game.Map = Kinetic.Rect.extend({
         if (this.newKeypoint.valid) {
             this.newKeypoint.setTextFill('blue');
             this.keypoints.push(this.newKeypoint);
+            Game.mapObjects.remove(this.newKeypoint);
+            Game.configObjects.add(this.newKeypoint);
             this._buildKeypoint();
             this._updateNewKeypoint();
             this._showNewKeypoint();

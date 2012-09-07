@@ -12,12 +12,14 @@ GameControl = {
     },
     startSim: function() {
         Game.startGame();
+        $('.state_button').hide();
     },
     pauseSim: function() {
         this.log('pause sim');
     },
     stopSim: function() {
-        this.log('stop sim');
+        Game.endGame();
+        $('.state_button').show();
     },
     removeLastWall: function() {
         Game.map.removeLastWall();

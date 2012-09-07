@@ -6,22 +6,27 @@ Game = {
 	uiState: 'config decision',
     stage:  null,
     map: null,
-	entities: new Kinetic.Layer(),
-    mapObjects: new Kinetic.Layer(),
+	entities: null,
+    configObjects: null,
+    mapObjects: null,
 
     antiterroristsCount: 5,
     terroristsCount: 5,
     timeLimit: 60,
 
 	init: function() {
-		var self = this;
-		this.stage = new Kinetic.Stage({
+		var self            = this;
+        this.mapObjects     = new Kinetic.Layer();
+        this.configObjects  = new Kinetic.Layer();
+        this.entities       = new Kinetic.Layer();
+		this.stage          = new Kinetic.Stage({
 			container: "container",
 			width: this.width,
 			height: this.height
 		});
 
 		this.stage.add(this.mapObjects);
+        this.stage.add(this.configObjects);
         this.stage.add(this.entities);
 
  	    this.stage.onFrame(function(frame) {
@@ -55,8 +60,7 @@ Game = {
         this._spawnAntiterrorists();
 	},
 	endGame: function(){
-
-
+        this.entities.removeChildren();
 	},
     _spawnTerrorists: function(){
         var iteration_limit = 10;
