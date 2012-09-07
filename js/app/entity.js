@@ -89,20 +89,15 @@ Game.Entity = Kinetic.Image.extend({
     seek: function(){
         this.changeState('seek');
         if (this.targetEntity) this.setTargetEntity(this.targetEntity);
-
-        var desired_velocity = (this.getVecTarget().subtract(this.getVecPosition())).multiply(this.maxSpeed);
-        this.speed = Math.sqrt(desired_velocity.e(1)*desired_velocity.e(1) + desired_velocity.e(2)*desired_velocity.e(2));
-        var vel = $V([desired_velocity.e(1)/this.speed,desired_velocity.e(2)/this.speed]);
-        if (isNaN(this.speed)) this.speed = 0;
-        if (isNaN(vel.e(1))) vel = Vector.Zero(2);
-        this.setVelocity(vel.e(1),vel.e(2));
-        this.speed = Math.min(this.speed, this.maxSpeed);
+        this._calculateVelocity(this.getVecTarget().subtract(this.getVecPosition()));
     },
     avoid: function(){
         this.changeState('avoid');
         if (this.targetEntity) this.setTargetEntity(this.targetEntity);
-
-        var desired_velocity = (this.getVecPosition().subtract(this.getVecTarget())).multiply(this.maxSpeed);
+        this._calculateVelocity(this.getVecPosition().subtract(this.getVecTarget()));
+    },
+    _calculateVelocity: function(vector){
+        var desired_velocity = vector.multiply(this.maxSpeed);
         this.speed = Math.sqrt(desired_velocity.e(1)*desired_velocity.e(1) + desired_velocity.e(2)*desired_velocity.e(2));
         var vel = $V([desired_velocity.e(1)/this.speed,desired_velocity.e(2)/this.speed]);
         if (isNaN(this.speed)) this.speed = 0;
@@ -110,5 +105,4 @@ Game.Entity = Kinetic.Image.extend({
         this.setVelocity(vel.e(1),vel.e(2));
         this.speed = Math.min(this.speed, this.maxSpeed);
     }
-
 });
