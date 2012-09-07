@@ -9,7 +9,8 @@ Game.Map = Kinetic.Rect.extend({
 
     defaultConfig: {
         width: Game.width,
-        height: Game.height
+        height: Game.height,
+        name: 'map'
     },
 
 	init: function(config){
@@ -109,19 +110,13 @@ Game.Map = Kinetic.Rect.extend({
     },
     _buildGrid: function() {
         for (var x= Game.mapDensity; x < this.getWidth(); x += Game.mapDensity) {
-            Game.mapObjects.add(new Kinetic.Line({
-              points: [x, 0, x, this.getHeight()],
-              stroke: "black",
-              strokeWidth: 0.2,
-              listening: false
+            Game.mapObjects.add(new Game.GridLine({
+              points: [x, 0, x, this.getHeight()]
             }));
         }
         for (var y= Game.mapDensity; y < this.getHeight(); y += Game.mapDensity) {
-            Game.mapObjects.add(new Kinetic.Line({
-              points: [0, y, this.getWidth(), y],
-              stroke: "black",
-              strokeWidth: 0.2,
-              listening: false
+            Game.mapObjects.add(new Game.GridLine({
+              points: [0, y, this.getWidth(), y]
             }));
         }
     },

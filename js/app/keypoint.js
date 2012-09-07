@@ -7,7 +7,8 @@ Game.Keypoint = Kinetic.Text.extend({
         fontSize: 14,
         fontStyle: 'bold',
         visible: false,
-        listening: false
+        listening: false,
+        name: 'keypoint'
     },
 
 	init: function(config){

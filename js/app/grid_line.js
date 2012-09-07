@@ -1,11 +1,9 @@
-Game.Zone = Kinetic.Circle.extend({
+Game.GridLine = Kinetic.Line.extend({
     defaultConfig: {
-        radius:40,
-        fill: 'green',
-        alpha: 0.5,
-        visible: false,
+        stroke: "black",
+        strokeWidth: 0.2,
         listening: false,
-        name: 'zone'
+        name: 'grid_line'
     },
 
 	init: function(config){

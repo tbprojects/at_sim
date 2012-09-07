@@ -11,7 +11,7 @@ GameControl = {
         this.log('save config');
     },
     startSim: function() {
-        this.log('start sim');
+        Game.startGame();
     },
     pauseSim: function() {
         this.log('pause sim');

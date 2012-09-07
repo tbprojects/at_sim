@@ -11,7 +11,8 @@ Game.Entity = Kinetic.Circle.extend({
 
     defaultConfig: {
         radius: 5,
-        draggable: true
+        draggable: true,
+        name: 'entity'
     },
 
 	init: function(config){

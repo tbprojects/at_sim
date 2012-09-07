@@ -8,7 +8,6 @@ Game = {
     map: null,
 	entities: new Kinetic.Layer(),
     mapObjects: new Kinetic.Layer(),
-	state: 'init',
 
     antiterroristsCount: 5,
     terroristsCount: 5,
@@ -51,19 +50,22 @@ Game = {
         this.map = new Game.Map({});
         this.mapObjects.add(this.map);
     },
-
 	startGame: function(){
-        var terrorist     = new Game.Terrorist({x: 130, y:200, fill: 'red', name: 'Roman'});
-        var antiterrorist = new Game.Antiterrorist({x: 150, y:150, fill: 'blue', name: 'Stach'});
+        this._spawnTerrorists();
+        this._spawnAntiterrorists();
+        var terrorist     = new Game.Terrorist({x: 130, y:200, name: 'Roman'});
+        var antiterrorist = new Game.Antiterrorist({x: 150, y:150, name: 'Stach'});
 		this.entities.add(terrorist);
 		this.entities.add(antiterrorist);
 	},
-
 	endGame: function(){
 
 	},
+    _spawnTerrorists: function(){
 
-	displayIntro: function() {
+    },
+    _spawnAntiterrorists:function(){
 
-	}
+    }
+
 };

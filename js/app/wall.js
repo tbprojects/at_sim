@@ -5,7 +5,8 @@ Game.Wall = Kinetic.Line.extend({
         stroke: 'black',
         strokeWidth: Game.mapDensity,
         lineCap: 'round',
-        listening: false
+        listening: false,
+        name: 'wall'
     },
 
 	init: function(config){
