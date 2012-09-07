@@ -56,6 +56,14 @@ Game.Entity = Kinetic.Circle.extend({
     die: function(){
         this.active = false;
     },
+    setRandomPositionInCircle: function(center, radius){
+        var theta = Math.random() * Math.PI * 2;
+        var length = Math.random();
+        var x = Math.cos(theta) * radius * length;
+        var y = Math.sin(theta) * radius * length;
+        var pos = center.add($V([x,y]));
+        this.setPosition(pos.e(1), pos.e(2));
+    },
     closestSeenOpponent: function(){
         for (i in Game.getEntities()) {
             var entity = Game.getEntities()[i];
@@ -64,6 +72,20 @@ Game.Entity = Kinetic.Circle.extend({
             }
         }
         return null;
+    },
+    isInCollision: function(){
+        var x = Math.round(this.getX()/Game.mapDensity);
+        var y = Math.round(this.getY()/Game.mapDensity);
+        var node;
+        try { node = Game.map.graph.nodes[x][y] } catch(e) { node = null }
+        if (!node || node.type == GraphNodeType.WALL) return true;
+        for (i in Game.getEntities()) {
+            var entity = Game.getEntities()[i];
+            var distance = this.getVecPosition().distanceFrom(entity.getVecPosition());
+            var radiusSum = this.getRadius().x+entity.getRadius().x;
+            if (this != entity && distance < radiusSum) return true;
+        }
+        return false;
     },
     seek: function(){
         this.changeState('seek');

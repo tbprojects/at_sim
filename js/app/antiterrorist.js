@@ -11,11 +11,6 @@ Game.Antiterrorist = Game.Entity.extend({
     think: function(){
         switch(this.currentState) {
             case 'idle':
-                var opponent = this.closestSeenOpponent();
-                if (opponent) {
-                    this.setTargetEntity(opponent);
-                    this.seek();
-                }
                 break;
             case 'seek':
                 this.seek();

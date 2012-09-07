@@ -12,5 +12,8 @@ Game.Zone = Kinetic.Circle.extend({
         this.setDefaultAttrs(this.defaultConfig);
         this._super(config || {});
         return this;
-	}
+	},
+    getVecPosition: function(){
+      return $V([this.getX(), this.getY()])
+    }
 });

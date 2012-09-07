@@ -20,6 +20,9 @@ Game.Keypoint = Kinetic.Text.extend({
       this.setPosition(this._snapToGrid(x),this._snapToGrid(y));
       this._validate();
     },
+    getVecPosition: function(){
+      return $V([this.getX(), this.getY()])
+    },
     _snapToGrid: function(n) {
         return Math.round(n/Game.mapDensity)*Game.mapDensity
     },

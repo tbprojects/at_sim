@@ -53,19 +53,39 @@ Game = {
 	startGame: function(){
         this._spawnTerrorists();
         this._spawnAntiterrorists();
-        var terrorist     = new Game.Terrorist({x: 130, y:200, name: 'Roman'});
-        var antiterrorist = new Game.Antiterrorist({x: 150, y:150, name: 'Stach'});
-		this.entities.add(terrorist);
-		this.entities.add(antiterrorist);
 	},
 	endGame: function(){
 
+
 	},
     _spawnTerrorists: function(){
-
+        var iteration_limit = 10;
+        var radius = this.map.zone.getRadius().x;
+        for (var i=0; i < this.terroristsCount; i+=1) {
+            var index  = Math.floor(Math.random() * this.map.keypoints.length);
+            var center = this.map.keypoints[index].getVecPosition();
+            var entity = new Game.Terrorist();
+            var k = 0;
+            do {
+                entity.setRandomPositionInCircle(center, radius);
+                k+=1;
+            } while(entity.isInCollision() && k < iteration_limit);
+            this.entities.add(entity);
+        }
     },
     _spawnAntiterrorists:function(){
-
+        var iteration_limit = 10;
+        var center = this.map.zone.getVecPosition();
+        var radius = this.map.zone.getRadius().x;
+        for (var i=0; i < this.antiterroristsCount; i+=1) {
+            var entity = new Game.Antiterrorist();
+            var k = 0;
+            do {
+                entity.setRandomPositionInCircle(center, radius);
+                k+=1;
+            } while(entity.isInCollision() && k < iteration_limit);
+            this.entities.add(entity);
+        }
     }
 
 };
