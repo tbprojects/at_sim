@@ -1,9 +1,11 @@
 Game.Antiterrorist = Game.Entity.extend({
     maxSpeed: 0.03,
+    imageSrc: 'assets/ct.png',
 
     defaultConfig: {
-        fill: 'blue',
-        radius: 5,
+        width: 12,
+        height:12,
+        rotation: 0,
         draggable: true,
         name: 'antiterrorist'
     },

@@ -1,4 +1,5 @@
-Game.Entity = Kinetic.Circle.extend({
+Game.Entity = Kinetic.Image.extend({
+    imageSrc: '',
     maxSpeed: 0,
     velX: 0,
     velY: 0,
@@ -10,7 +11,9 @@ Game.Entity = Kinetic.Circle.extend({
     currentState: 'idle',
 
     defaultConfig: {
-        radius: 5,
+        width: 12,
+        height:12,
+        rotation: 0,
         draggable: true,
         name: 'entity'
     },
@@ -18,7 +21,9 @@ Game.Entity = Kinetic.Circle.extend({
 	init: function(config){
         this.setDefaultAttrs(this.defaultConfig);
         this._super(config || {});
-
+        var image = new Image();
+        image.src = this.imageSrc;
+        this.setImage(image);
         return this;
 	},
     setTarget: function(x,y) {
@@ -82,7 +87,7 @@ Game.Entity = Kinetic.Circle.extend({
         for (i in Game.getEntities()) {
             var entity = Game.getEntities()[i];
             var distance = this.getVecPosition().distanceFrom(entity.getVecPosition());
-            var radiusSum = this.getRadius().x+entity.getRadius().x;
+            var radiusSum = this.getWidth()+entity.getWidth();
             if (this != entity && distance < radiusSum) return true;
         }
         return false;
