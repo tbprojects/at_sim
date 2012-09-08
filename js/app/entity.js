@@ -1,4 +1,6 @@
-Game.Entity = Kinetic.Image.extend({
+Game.Entity = Kinetic.Image.extend(
+    $.extend(PositionFunc,
+    {
     imageSrc: '',
     maxSpeed: 0,
     velX: 0,
@@ -73,10 +75,7 @@ Game.Entity = Kinetic.Image.extend({
         this.setPosition(pos.e(1), pos.e(2));
     },
     isInCollision: function(){
-        var x = Math.round(this.getX()/Game.mapDensity);
-        var y = Math.round(this.getY()/Game.mapDensity);
-        var node;
-        try { node = Game.map.graph.nodes[x][y] } catch(e) { node = null }
+        var node = this.getNodeByPosition();
         if (!node || node.type == GraphNodeType.WALL) return true;
         for (i in Game.getEntities()) {
             var entity = Game.getEntities()[i];
@@ -105,4 +104,4 @@ Game.Entity = Kinetic.Image.extend({
         this.setVelocity(vel.e(1),vel.e(2));
         this.speed = Math.min(this.speed, this.maxSpeed);
     }
-});
+}));

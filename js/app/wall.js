@@ -1,4 +1,6 @@
-Game.Wall = Kinetic.Line.extend({
+Game.Wall = Kinetic.Line.extend(
+    $.extend(PositionFunc,
+    {
     valid: false,
 
     defaultConfig: {
@@ -41,9 +43,6 @@ Game.Wall = Kinetic.Line.extend({
     isHorizontal: function(){
         return this.getStartPoint().y == this.getEndPoint().y;
     },
-    _snapToGrid: function(n) {
-        return Math.round(n/Game.mapDensity)*Game.mapDensity
-    },
     _validate: function(){
         if ( !(this.isVertical() && this.isHorizontal()) && (this.isVertical() || this.isHorizontal()) ) {
             this.setStroke('green');
@@ -53,4 +52,4 @@ Game.Wall = Kinetic.Line.extend({
             this.valid = false;
         }
     }
-});
+}));

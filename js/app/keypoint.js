@@ -1,4 +1,6 @@
-Game.Keypoint = Kinetic.Text.extend({
+Game.Keypoint = Kinetic.Text.extend(
+    $.extend(PositionFunc,
+    {
     valid: false,
 
     defaultConfig: {
@@ -20,19 +22,8 @@ Game.Keypoint = Kinetic.Text.extend({
       this.setPosition(this._snapToGrid(x),this._snapToGrid(y));
       this._validate();
     },
-    getVecPosition: function(){
-      return $V([this.getX(), this.getY()])
-    },
-    _snapToGrid: function(n) {
-        return Math.round(n/Game.mapDensity)*Game.mapDensity
-    },
     _validate: function(){
-        var node;
-        try{
-            node = Game.map.graph.nodes[this.getX()/Game.mapDensity][this.getY()/Game.mapDensity];
-        } catch(e) {
-            node = null;
-        }
+        var node = this.getNodeByPosition();
         if (node && node.type == GraphNodeType.OPEN) {
             this.setTextFill('green');
             this.valid = true;
@@ -41,4 +32,4 @@ Game.Keypoint = Kinetic.Text.extend({
             this.valid = false;
         }
     }
-});
+}));
