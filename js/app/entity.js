@@ -7,10 +7,15 @@ Game.Entity = Kinetic.Image.extend(
     velY: 0,
     tarX: null,
     tarY: null,
-    active: true,
+    groupIndex: 0,
+    isAlive: true,
     speed: 0,
-    targetEntity: null,
-    currentState: 'idle',
+    avoidDistance: 10,
+    lookAhead: 12,
+    arrivePrecision: 2,
+    targetEntityStack: [],
+    path: [],
+    currentState: 'init',
 
     defaultConfig: {
         width: 12,
@@ -23,6 +28,7 @@ Game.Entity = Kinetic.Image.extend(
 	init: function(config){
         this.setDefaultAttrs(this.defaultConfig);
         this._super(config || {});
+        this.groupIndex  = config.groupIndex;
         var image = new Image();
         image.src = this.imageSrc;
         this.setImage(image);
@@ -34,8 +40,17 @@ Game.Entity = Kinetic.Image.extend(
         this.tarY = y;
     },
     setTargetEntity: function(entity){
-        this.targetEntity = entity;
+        this.targetEntityStack.push(entity);
         this.setTarget(entity.getX(), entity.getY());
+    },
+    currentTargetEntity: function(){
+        return this.targetEntityStack[this.targetEntityStack.length-1];
+    },
+    unsetTargetEntity: function(){
+        this.targetEntityStack.pop();
+        if (this.currentTargetEntity()) {
+            this.setTarget(this.currentTargetEntity().getX(), this.currentTargetEntity().getY());
+        }
     },
     setVelocity: function(x,y) {
         this.velX = x;
@@ -64,7 +79,7 @@ Game.Entity = Kinetic.Image.extend(
         // put thinking logic in subclasses - do nothing here
     },
     die: function(){
-        this.active = false;
+        this.isAlive = false;
     },
     setRandomPositionInCircle: function(center, radius){
         var theta = Math.random() * Math.PI * 2;
@@ -86,14 +101,20 @@ Game.Entity = Kinetic.Image.extend(
         return false;
     },
     seek: function(){
-        this.changeState('seek');
-        if (this.targetEntity) this.setTargetEntity(this.targetEntity);
         this._calculateVelocity(this.getVecTarget().subtract(this.getVecPosition()));
     },
-    avoid: function(){
-        this.changeState('avoid');
-        if (this.targetEntity) this.setTargetEntity(this.targetEntity);
+    flee: function(){
         this._calculateVelocity(this.getVecPosition().subtract(this.getVecTarget()));
+    },
+    avoid: function(){
+
+    },
+    stop: function(){
+        this.setVelocity(0,0);
+    },
+    arrived: function(){
+        var distance = this.getVecPosition().distanceFrom($V([this.tarX, this.tarY]));
+        return distance < this.arrivePrecision;
     },
     _calculateVelocity: function(vector){
         var desired_velocity = vector.multiply(this.maxSpeed);

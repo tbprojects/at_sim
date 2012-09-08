@@ -68,7 +68,7 @@ Game = {
         for (var i=0; i < this.terroristsCount; i+=1) {
             var index  = Math.floor(Math.random() * this.map.keypoints.length);
             var center = this.map.keypoints[index].getVecPosition();
-            var entity = new Game.Terrorist();
+            var entity = new Game.Terrorist({groupIndex: i});
             var k = 0;
             do {
                 entity.setRandomPositionInCircle(center, radius);
@@ -82,7 +82,7 @@ Game = {
         var center = this.map.zone.getVecPosition();
         var radius = this.map.zone.getRadius().x;
         for (var i=0; i < this.antiterroristsCount; i+=1) {
-            var entity = new Game.Antiterrorist();
+            var entity = new Game.Antiterrorist({groupIndex: i});
             var k = 0;
             do {
                 entity.setRandomPositionInCircle(center, radius);
