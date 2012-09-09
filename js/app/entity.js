@@ -31,9 +31,6 @@ Game.Entity = Kinetic.Image.extend(
         this._super(config || {});
         this.groupIndex  = config.groupIndex;
         this.rayLine = new Game.Line({stroke: 'red'});
-        this.rayLine.setStartPoint(this.getX(), this.getY());
-        this.rayLine.setEndPoint(this.getX(), this.getY());
-        Game.configObjects.add(this.rayLine);
         var image = new Image();
         image.src = this.imageSrc;
         this.setImage(image);
@@ -61,6 +58,9 @@ Game.Entity = Kinetic.Image.extend(
         this.velX = x;
         this.velY = y;
     },
+    hasVelocity: function(){
+        return this.velX != 0 || this.velY != 0;
+    },
     getVecPosition: function(){
       return $V([this.getX(), this.getY()])
     },
@@ -72,10 +72,12 @@ Game.Entity = Kinetic.Image.extend(
     },
     update: function(frame) {
    		this.think();
-        var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
-        this.setPosition(pos.e(1),pos.e(2));
-        var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
-        this.setRotation(rot);
+        if (this.hasVelocity()) {
+            var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
+            this.setPosition(pos.e(1),pos.e(2));
+            var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
+            this.setRotation(rot);
+        }
    	},
     changeState: function(state) {
         this.currentState = state;
@@ -111,6 +113,13 @@ Game.Entity = Kinetic.Image.extend(
     flee: function(){
         this._calculateVelocity(this.getVecPosition().subtract(this.getVecTarget()));
     },
+    stop: function(){
+        this.setVelocity(0,0);
+    },
+    arrived: function(){
+        var distance = this.getVecPosition().distanceFrom($V([this.tarX, this.tarY]));
+        return distance < this.arrivePrecision;
+    },
     avoid: function(){
         var rayVector = this.getVecVelocity().toUnitVector().multiply(this.lookAhead);
         var rayEndPos = this.getVecPosition().add(rayVector);
@@ -131,16 +140,10 @@ Game.Entity = Kinetic.Image.extend(
                 var target = collisionPoint.add(norm.multiply(this.avoidDistance));
                 this.setTarget(target.e(1), target.e(2));
                 this.seek();
-                break;
+                return true;
             }
         }
-    },
-    stop: function(){
-        this.setVelocity(0,0);
-    },
-    arrived: function(){
-        var distance = this.getVecPosition().distanceFrom($V([this.tarX, this.tarY]));
-        return distance < this.arrivePrecision;
+        return false;
     },
     _calculateVelocity: function(vector){
         var desired_velocity = vector.multiply(this.maxSpeed);
