@@ -1,5 +1,8 @@
 Game.Antiterrorist = Game.Entity.extend({
-    maxSpeed: 0.03,
+
+    MOVING: 0.03,
+    SHOOTING: 0.005,
+
     followDistance: 8,
     imageSrc: 'assets/ct.png',
     isLeader: false,
@@ -7,16 +10,14 @@ Game.Antiterrorist = Game.Entity.extend({
     nodeIndex: -1,
     path: [],
 
+    enemyName: 'terrorist',
+
     defaultConfig: {
         width: 12,
         height:12,
         rotation: 0,
         draggable: true,
         name: 'antiterrorist'
-    },
-    closestSeenOpponent: function(){
-        //TODO: temporary solution for testing
-        return Game.entities.get('.terrorist')[0];
     },
     think: function(){
         switch(this.currentState) {
@@ -36,6 +37,7 @@ Game.Antiterrorist = Game.Entity.extend({
             }
     },
     followEntity: function(){
+        this.maxSpeed = this.MOVING;
         //TODO: it should be done once in setup, but it did not work
         this.unsetTargetEntity();
         this.setTargetEntity(Game.entities.get('.antiterrorist')[this.groupIndex-1]);
@@ -45,6 +47,7 @@ Game.Antiterrorist = Game.Entity.extend({
         this.seek();
     },
     followPath: function(){
+        this.maxSpeed = this.MOVING;
         var node = this.path[this.nodeIndex];
         if (!node) {
             Game.log('Keypoint #'+(this.keypointIndex+1)+' reached');

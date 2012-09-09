@@ -2,8 +2,8 @@ Game.Terrorist = Game.Entity.extend({
 
     RUNNING: 0.02,
     WALKING: 0.01,
+    SHOOTING: 0.005,
 
-    maxSpeed: 0,
     imageSrc: 'assets/ter.png',
 
     wanderCircleDistance: 50,
@@ -15,16 +15,14 @@ Game.Terrorist = Game.Entity.extend({
     standingTime:-1,
 
 
+    enemyName: 'antiterrorist',
+
     defaultConfig: {
         width: 12,
         height:12,
         rotation: 0,
         draggable: true,
         name: 'terrorist'
-    },
-    closestSeenOpponent: function(){
-        //TODO: temporary solution for testing
-        return Game.entities.get('.antiterrorist')[0];
     },
     think: function(){
         switch(this.currentState) {

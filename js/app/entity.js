@@ -18,6 +18,9 @@ Game.Entity = Kinetic.Image.extend(
     path: [],
     currentState: 'init',
 
+    sightDistance: 200,
+    enemyName: '',
+
     defaultConfig: {
         width: 12,
         height:12,
@@ -31,6 +34,8 @@ Game.Entity = Kinetic.Image.extend(
         this._super(config || {});
         this.groupIndex  = config.groupIndex;
         this.rayLine = new Game.Line({stroke: 'red'});
+        this.rayLine.setStartPoint(this.getX(),this.getY());
+        this.rayLine.setEndPoint(this.getX(),this.getY());
         var image = new Image();
         image.src = this.imageSrc;
         this.setImage(image);
@@ -74,6 +79,7 @@ Game.Entity = Kinetic.Image.extend(
         if (!Game.paused) {
             this.think();
             if (this.hasVelocity()) {
+                this._updateCollisionRay();
                 var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
                 this.setPosition(pos.e(1),pos.e(2));
                 var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
@@ -123,10 +129,6 @@ Game.Entity = Kinetic.Image.extend(
         return distance < this.arrivePrecision;
     },
     avoid: function(){
-        var rayVector = this.getVecVelocity().toUnitVector().multiply(this.lookAhead);
-        var rayEndPos = this.getVecPosition().add(rayVector);
-        this.rayLine.setStartPoint(this.getX(), this.getY());
-        this.rayLine.setEndPoint(rayEndPos.e(1), rayEndPos.e(2));
         for (var i in Game.map.walls) {
             var wall = Game.map.walls[i];
             var collisionPoint = this.rayLine.getVecIntersectionPoint(wall);
@@ -146,6 +148,41 @@ Game.Entity = Kinetic.Image.extend(
             }
         }
         return false;
+    },
+    closestSeenOpponent: function(){
+        var result = null;
+        var resultDistance = this.sightDistance;
+        var enemies = Game.entities.get('.'+this.enemyName);
+        for (var i in enemies) {
+            var enemy = enemies[i];
+            lDist = this.getVecPosition().distanceFrom(enemy.getVecPosition());
+            sDist = this.rayLine.getVecEndPoint().distanceFrom(enemy.getVecPosition());
+            if (sDist < lDist && sDist < resultDistance) {
+                var lineToEnemy = new Game.Line();
+                var behindWall = false;
+                lineToEnemy.setStartPoint(this.getX(), this.getY());
+                lineToEnemy.setEndPoint(enemy.getX(), enemy.getY());
+
+                for (var k in Game.map.walls) {
+                    var wall = Game.map.walls[k];
+                    if (lineToEnemy.getIntersectionPoint(wall)){
+                        behindWall = true;
+                        break;
+                    }
+                }
+                if (!behindWall) {
+                    resultDistance = sDist;
+                    result = enemy;
+                }
+            }
+        }
+        return result;
+    },
+    _updateCollisionRay: function(){
+        var rayVector = this.getVecVelocity().toUnitVector().multiply(this.lookAhead);
+        var rayEndPos = this.getVecPosition().add(rayVector);
+        this.rayLine.setStartPoint(this.getX(), this.getY());
+        this.rayLine.setEndPoint(rayEndPos.e(1), rayEndPos.e(2));
     },
     _calculateVelocity: function(vector){
         var desired_velocity = vector.multiply(this.maxSpeed);
