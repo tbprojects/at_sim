@@ -1,40 +1,17 @@
-Game.Wall = Kinetic.Line.extend(
+Game.Wall = Game.Line.extend(
     $.extend(PositionFunc,
     {
     valid: false,
 
     defaultConfig: {
         stroke: 'black',
-        strokeWidth: Game.mapDensity,
+        strokeWidth: Game.mapDensity/2,
         lineCap: 'round',
         listening: false,
         name: 'wall'
     },
-
-	init: function(config){
-        this.setDefaultAttrs(this.defaultConfig);
-        this._super(config || {});
-        return this;
-	},
-    getStartPoint: function(){
-        return this.getPoints()[0];
-    },
-    getEndPoint: function(){
-        return this.getPoints()[1];
-    },
-    setStartPoint: function(x,y){
-        this.setPoints([
-            this._snapToGrid(x),
-            this._snapToGrid(y)
-        ]);
-    },
     setEndPoint: function(x,y){
-        this.setPoints([
-            this.getStartPoint().x,
-            this.getStartPoint().y,
-            this._snapToGrid(x),
-            this._snapToGrid(y)
-        ]);
+        this._super(x,y);
         this._validate();
     },
     isVertical: function(){

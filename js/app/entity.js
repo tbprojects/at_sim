@@ -7,12 +7,13 @@ Game.Entity = Kinetic.Image.extend(
     velY: 0,
     tarX: null,
     tarY: null,
+    rayLine: null,
     groupIndex: 0,
     isAlive: true,
     speed: 0,
-    avoidDistance: 10,
+    avoidDistance: 12,
     lookAhead: 12,
-    arrivePrecision: 2,
+    arrivePrecision: 5,
     targetEntityStack: [],
     path: [],
     currentState: 'init',
@@ -29,6 +30,10 @@ Game.Entity = Kinetic.Image.extend(
         this.setDefaultAttrs(this.defaultConfig);
         this._super(config || {});
         this.groupIndex  = config.groupIndex;
+        this.rayLine = new Game.Line({stroke: 'red'});
+        this.rayLine.setStartPoint(this.getX(), this.getY());
+        this.rayLine.setEndPoint(this.getX(), this.getY());
+        Game.configObjects.add(this.rayLine);
         var image = new Image();
         image.src = this.imageSrc;
         this.setImage(image);
@@ -107,7 +112,28 @@ Game.Entity = Kinetic.Image.extend(
         this._calculateVelocity(this.getVecPosition().subtract(this.getVecTarget()));
     },
     avoid: function(){
-
+        var rayVector = this.getVecVelocity().toUnitVector().multiply(this.lookAhead);
+        var rayEndPos = this.getVecPosition().add(rayVector);
+        this.rayLine.setStartPoint(this.getX(), this.getY());
+        this.rayLine.setEndPoint(rayEndPos.e(1), rayEndPos.e(2));
+        for (var i in Game.map.walls) {
+            var wall = Game.map.walls[i];
+            var collisionPoint = this.rayLine.getVecIntersectionPoint(wall);
+            if (collisionPoint) {
+                var norm;
+                var n0 = this.getVecPosition().distanceFrom(collisionPoint.add(wall.getNormals()[0]));
+                var n1 = this.getVecPosition().distanceFrom(collisionPoint.add(wall.getNormals()[1]));
+                if (n0 < n1) {
+                    norm = wall.getNormals()[0];
+                } else {
+                    norm = wall.getNormals()[1];
+                }
+                var target = collisionPoint.add(norm.multiply(this.avoidDistance));
+                this.setTarget(target.e(1), target.e(2));
+                this.seek();
+                break;
+            }
+        }
     },
     stop: function(){
         this.setVelocity(0,0);

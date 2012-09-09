@@ -1,6 +1,6 @@
 Game.Antiterrorist = Game.Entity.extend({
     maxSpeed: 0.03,
-    followDistance: 12,
+    followDistance: 8,
     imageSrc: 'assets/ct.png',
     isLeader: false,
     keypointIndex:-1,
