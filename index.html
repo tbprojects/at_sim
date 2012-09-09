@@ -25,6 +25,7 @@
 	<script>
 		window.onload = function() {
 			Game.init();
+            GameControl.init();
 		};	
 	</script>
   </head>
@@ -47,14 +48,15 @@
                 <div data-ui-state="config decision" class="stage current">
                     <h3>Define situation</h3>
                     <p class="hint">
-                        Here you can load previously saved configuration.<br/>
-                        If you want to create new one, then press "Next"
+                        Here you can load or remove previously saved configuration.<br/>
+                        If you want to create the new one, then press "Next"
                     </p>
                     <ul>
                         <li>
                             <label for="load_config_name">Load config</label>
-                            <select id="load_config_name" style="width: 250px"></select>
+                            <select id="load_config_name" style="width: 190px"></select>
                             <button onclick="GameControl.loadConfig()">Load</button>
+                            <button onclick="GameControl.removeConfig()">Remove</button>
                         </li>
                     </ul>
                 </div>
@@ -147,15 +149,15 @@
                         </p>
                         <ul>
                             <li>
-                                <label for="new_config_name">Save current config</label>
-                                <input type="text" id="new_config_name" size="28" style="width:auto">
+                                <label for="config_name">Save current config</label>
+                                <input type="text" id="config_name" size="28" style="width:auto">
                                 <button onclick="GameControl.saveConfig()">Save</button>
                             </li>
                             <li>
                                 <label>Simulation control</label>
-                                <button onclick="GameControl.startSim()">Start</button>
-                                <button onclick="GameControl.pauseSim()">Pause</button>
-                                <button onclick="GameControl.stopSim()">Stop</button>
+                                <button id="start_button" onclick="GameControl.startSim()">Start</button>
+                                <button id="pause_button" onclick="GameControl.pauseSim()">Pause</button>
+                                <button id="stop_button" onclick="GameControl.stopSim()">Stop</button>
                             </li>
                         </ul>
                     </div>

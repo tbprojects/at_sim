@@ -9,6 +9,7 @@ Game = {
 	entities: null,
     configObjects: null,
     mapObjects: null,
+    paused: false,
 
     antiterroristsCount: 5,
     terroristsCount: 5,
@@ -55,12 +56,17 @@ Game = {
         this.map = new Game.Map({});
         this.mapObjects.add(this.map);
     },
+    togglePause: function(){
+        Game.paused = !Game.paused;
+    },
 	startGame: function(){
         this._spawnTerrorists();
         this._spawnAntiterrorists();
+        Game.paused = false;
 	},
 	endGame: function(){
         this.entities.removeChildren();
+        Game.paused = false;
 	},
     _spawnTerrorists: function(){
         var iteration_limit = 10;

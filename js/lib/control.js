@@ -1,25 +1,68 @@
 GameControl = {
+
+    storagePrefix: 'sss_map_',
+
+    init: function(){
+        var cfs = this.configs();
+        for (var name in cfs) {
+            $('#load_config_name').append('<option value="'+cfs[name]+'">'+name+'</option>');
+        }
+    },
     log: function(text) {
         var date = new Date();
         time = date.toTimeString().substring(0,8);
         $('#logs tbody').prepend('<tr><td>'+text+'</td><td>'+time+'</td></tr>');
     },
+    configs: function() {
+        result = {};
+        for (var i in localStorage) {
+            if (i.indexOf(this.storagePrefix) > -1) {
+                var name = JSON.parse(localStorage[i]).name;
+                result[name] = i;
+            }
+        }
+        return result;
+    },
     loadConfig: function() {
-        this.log('load config');
+        var key = $('#load_config_name').val();
+        if (key) {
+            var config = JSON.parse(localStorage[key]);
+            Game.map.importConfig(config);
+            this.changeUiState('config numbers');
+            $('#config_name').val(config.name);
+            alert('Config successfully loaded !');
+        }
     },
     saveConfig: function() {
-        this.log('save config');
+        var name  = $('#config_name').val();
+        var value = JSON.stringify($.extend(Game.map.serializeConfig(),{name: name}));
+        var key   = this.storagePrefix+name;
+        localStorage.setItem(key, value);
+        alert('Config successfully saved!');
+    },
+    removeConfig: function(){
+        var key = $('#load_config_name').val();
+        if (key) {
+            if (confirm("Are you sure?")) {
+                $('option[value="'+key+'"]').remove();
+                localStorage.removeItem(key);
+                alert('Config successfully removed!');
+            }
+        }
     },
     startSim: function() {
         Game.startGame();
         $('.state_button').hide();
+        $('#start_button').attr('disabled','disabled');
     },
     pauseSim: function() {
-        this.log('pause sim');
+        Game.togglePause();
     },
     stopSim: function() {
         Game.endGame();
+        $('#logs tbody').html('');
         $('.state_button').show();
+        $('#start_button').removeAttr('disabled');
     },
     removeLastWall: function() {
         Game.map.removeLastWall();
@@ -37,21 +80,27 @@ GameControl = {
         Game.map.clearKeypoints();
     },
     nextConfig: function(){
-        this._updateNumberData();
-        this._updateConfigStatus();
-        $('.stage.current').removeClass('current').next('.stage').addClass('current');
-        if ($('.stage.current').next('.stage').length == 0) $('#nextConf').attr('disabled','disabled');
-        $('#prevConf').removeAttr('disabled');
-        Game.uiState = $('.stage.current').attr('data-ui-state');
-        this._updateCursor();
+        this.changeUiState($('.stage.current').next('.stage').attr('data-ui-state'));
     },
     previousConfig: function(){
+        this.changeUiState($('.stage.current').prev('.stage').attr('data-ui-state'));
+    },
+    changeUiState: function(uiState){
         this._updateNumberData();
         this._updateConfigStatus();
-        $('.stage.current').removeClass('current').prev('.stage').addClass('current');
-        if ($('.stage.current').prev('.stage').length == 0) $('#prevConf').attr('disabled','disabled');
-        $('#nextConf').removeAttr('disabled');
-        Game.uiState = $('.stage.current').attr('data-ui-state');
+        $('.stage.current').removeClass('current');
+        $('.stage[data-ui-state="'+uiState+'"]').addClass('current');
+        if ($('.stage.current').next('.stage').length == 0) {
+            $('#nextConf').attr('disabled','disabled')
+        } else {
+            $('#nextConf').removeAttr('disabled');
+        }
+        if ($('.stage.current').prev('.stage').length == 0) {
+            $('#prevConf').attr('disabled','disabled');
+        } else {
+            $('#prevConf').removeAttr('disabled');
+        }
+        Game.uiState = uiState;
         this._updateCursor();
     },
     _updateCursor: function(){

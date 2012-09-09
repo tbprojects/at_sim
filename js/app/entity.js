@@ -13,7 +13,7 @@ Game.Entity = Kinetic.Image.extend(
     speed: 0,
     avoidDistance: 12,
     lookAhead: 12,
-    arrivePrecision: 5,
+    arrivePrecision: 2,
     targetEntityStack: [],
     path: [],
     currentState: 'init',
@@ -71,12 +71,14 @@ Game.Entity = Kinetic.Image.extend(
       return $V([this.tarX, this.tarY])
     },
     update: function(frame) {
-   		this.think();
-        if (this.hasVelocity()) {
-            var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
-            this.setPosition(pos.e(1),pos.e(2));
-            var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
-            this.setRotation(rot);
+        if (!Game.paused) {
+            this.think();
+            if (this.hasVelocity()) {
+                var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
+                this.setPosition(pos.e(1),pos.e(2));
+                var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
+                this.setRotation(rot);
+            }
         }
    	},
     changeState: function(state) {

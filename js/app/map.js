@@ -53,6 +53,36 @@ Game.Map = Kinetic.Rect.extend({
             this.zone = null;
         }
     },
+    serializeConfig: function(){
+        return {
+            walls: $.map(this.walls, function(el, i){ return {s: el.getStartPoint(), e: el.getEndPoint()}}),
+            zone: this.zone.getPosition(),
+            keypoints: $.map(this.keypoints, function(el, i){ return el.getPosition()}),
+            graph: $.map(this.graph.nodes, function(row, i){return [$.map(row, function(node,k){ return node.type})]})
+        }
+    },
+    importConfig: function(config){
+        Game.configObjects.removeChildren();
+        this.graph = new Graph(config.graph);
+        this.zone = null;
+        this.walls = [];
+        this.keypoints = [];
+        var i;
+        for (i in config.walls) {
+            var data = config.walls[i];
+            var wall = new Game.Wall({points: [data.s.x, data.s.y, data.e.x, data.e.y]});
+            this.walls.push(wall);
+            Game.configObjects.add(wall);
+        }
+        for (i in config.keypoints) {
+            var data = config.keypoints[i];
+            var keypoint = new Game.Keypoint({x: data.x, y: data.y, text: (parseInt(i)+1).toString(), visible: true, textFill: 'blue'});
+            this.keypoints.push(keypoint);
+            Game.configObjects.add(keypoint);
+        }
+        this.zone = new Game.Zone({x: config.zone.x, y: config.zone.y, visible: true, alpha: 0.8});
+        Game.configObjects.add(this.zone);
+    },
     _bindEvents: function(){
         var self = this;
         this.on("mousedown", function() {
@@ -145,18 +175,18 @@ Game.Map = Kinetic.Rect.extend({
     _updateWallOnGraph: function(wall, state){
         var i;
         if (wall.isVertical()) {
-            var startY = wall.getStartPoint().y/Game.mapDensity-1;
-            var endY = wall.getEndPoint().y/Game.mapDensity+1;
+            var startY = wall.getStartPoint().y/Game.mapDensity;
+            var endY = wall.getEndPoint().y/Game.mapDensity;
             var x = wall.getStartPoint().x/Game.mapDensity;
-            for (i=Math.min(startY,endY); i<Math.max(startY,endY); i+=1) {
+            for (i=Math.min(startY,endY)-1; i<Math.max(startY,endY)+1; i+=1) {
                 this.graph.nodes[x][i].type = state;
                 this.graph.nodes[x-1][i].type = state;
             }
         } else {
-            var startX = wall.getStartPoint().x/Game.mapDensity-1;
-            var endX = wall.getEndPoint().x/Game.mapDensity+1;
+            var startX = wall.getStartPoint().x/Game.mapDensity;
+            var endX = wall.getEndPoint().x/Game.mapDensity;
             var y = wall.getStartPoint().y/Game.mapDensity;
-            for (i=Math.min(startX,endX); i<Math.max(startX,endX); i+=1) {
+            for (i=Math.min(startX,endX)-1; i<Math.max(startX,endX)+1; i+=1) {
                 this.graph.nodes[i][y].type = state;
                 this.graph.nodes[i][y-1].type = state;
             }
