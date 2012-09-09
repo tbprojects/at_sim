@@ -47,6 +47,7 @@ Game.Antiterrorist = Game.Entity.extend({
     followPath: function(){
         var node = this.path[this.nodeIndex];
         if (!node) {
+            Game.log('Keypoint #'+(this.keypointIndex+1)+' reached');
             this.changeState('calculate path');
         } else {
             if (this.arrived()) this.nodeIndex += 1;
@@ -62,6 +63,7 @@ Game.Antiterrorist = Game.Entity.extend({
             this.path = this._buildPathTo(Game.map.keypoints[this.keypointIndex]);
             this.changeState('follow path')
         } else {
+            Game.log('Plan executed');
             this.stop();
             this.changeState('idle');
         }

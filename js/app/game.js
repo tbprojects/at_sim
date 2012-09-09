@@ -62,6 +62,7 @@ Game = {
 	startGame: function(){
         this._spawnTerrorists();
         this._spawnAntiterrorists();
+        Game.log('Simulation started');
         Game.paused = false;
 	},
 	endGame: function(){

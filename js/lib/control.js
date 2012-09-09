@@ -7,6 +7,7 @@ GameControl = {
         for (var name in cfs) {
             $('#load_config_name').append('<option value="'+cfs[name]+'">'+name+'</option>');
         }
+        Game.log = GameControl.log;
     },
     log: function(text) {
         var date = new Date();
