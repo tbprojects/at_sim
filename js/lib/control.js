@@ -31,7 +31,6 @@ GameControl = {
             Game.map.importConfig(config);
             this.changeUiState('config numbers');
             $('#config_name').val(config.name);
-            alert('Config successfully loaded !');
         }
     },
     saveConfig: function() {

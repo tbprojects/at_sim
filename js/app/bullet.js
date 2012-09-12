@@ -39,7 +39,7 @@ Game.Bullet = Game.Entity.extend({
     move: function(){
         this.maxSpeed = this.MOVING;
         var entityHit = this.isInCollision();
-        if (entityHit === true) {
+        if (this.energy < 0 || entityHit === true) {
             this.die();
         } else if (entityHit &&
                    entityHit != this.shooter &&

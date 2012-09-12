@@ -16,6 +16,7 @@ Game.Entity = Kinetic.Image.extend(
     lookAhead: 14,
     arrivePrecision: 2,
     targetEntityStack: [],
+    watchedEntity: null,
     path: [],
     healthPoints: 100,
     collisionRadius: 12,
@@ -116,7 +117,7 @@ Game.Entity = Kinetic.Image.extend(
     isInCollision: function(){
         for (i in Game.map.walls) {
             var wall = Game.map.walls[i];
-            if (this.rayLine.getIntersectionPoint(wall)) {
+            if (this.rayLine.getIntersectionPointWithLine(wall)) {
                 return true;
             }
         }
@@ -167,28 +168,43 @@ Game.Entity = Kinetic.Image.extend(
         var result = null;
         var resultDistance = this.sightDistance;
         var enemies = Game.entities.get('.'+this.enemyName);
-        for (var i in enemies) {
+        for (var i= 0; i < enemies.length; i+=1) {
             var enemy = enemies[i];
             if (!enemy.isAlive) continue;
             lDist = this.getVecPosition().distanceFrom(enemy.getVecPosition());
             sDist = this.rayLine.getVecEndPoint().distanceFrom(enemy.getVecPosition());
             if (sDist < lDist && sDist < resultDistance) {
                 var lineToEnemy = new Game.Line();
-                var behindWall = false;
                 lineToEnemy.setStartPoint(this.getX(), this.getY(), false);
                 lineToEnemy.setEndPoint(enemy.getX(), enemy.getY(), false);
 
-                for (var k in Game.map.walls) {
+                // checking allies on the way
+                var behindAlly = false;
+                var allies = Game.entities.get('.'+this.getName());
+                for (var j= 0; j < allies.length; j+=1) {
+                    var ally = allies[j];
+                    if (this == ally) continue;
+                    if (lineToEnemy.getVecIntersectionPointWithSphere(ally.getVecPosition(), this.collisionRadius)){
+                        behindAlly = true;
+                        break;
+                    }
+                }
+                if (behindAlly) continue;
+
+                // checking walls on the way
+                var behindWall = false;
+                var walls = Game.map.walls;
+                for (var k= 0; k < walls.length; k+=1) {
                     var wall = Game.map.walls[k];
-                    if (lineToEnemy.getIntersectionPoint(wall)){
+                    if (lineToEnemy.getIntersectionPointWithLine(wall)){
                         behindWall = true;
                         break;
                     }
                 }
-                if (!behindWall) {
-                    resultDistance = sDist;
-                    result = enemy;
-                }
+                if (behindWall) continue;
+
+                resultDistance = sDist;
+                result = enemy;
             }
         }
         return result;
@@ -203,31 +219,32 @@ Game.Entity = Kinetic.Image.extend(
     watchForEnemy: function(){
         var opponent = this.closestSeenOpponent();
         if (!opponent){
-            if (this.currentTargetEntity() && this.currentTargetEntity().getName() == this.enemyName) {
-                // lost opponent from sight
-                this.unsetTargetEntity();
+            // can not see opponent
+            if(this.currentState == 'attack') {
+                while(this.currentTargetEntity() &&
+                      this.currentTargetEntity().getName() == this.enemyName) {
+                    this.unsetTargetEntity();
+                }
+                this.reactionTime  = this.reactionTimeMax;
+                this.watchedEntity = null;
                 this.changeState('after attack');
-                return
             }
-            this.reactionTime = this.reactionTimeMax;
-        }
-        if (opponent && opponent != this.currentTargetEntity()) {
-            // opponent seen
-            this.reactionTime -= 1;
-            if (this.reactionTime < 0) {
-                this.setTargetEntity(opponent);
-                this.changeState('attack');
+        } else {
+            if (opponent != this.watchedEntity) {
+                // new opponent seen
+                this.watchedEntity = opponent;
+                this.reactionTime = this.reactionTimeMax;
+            } else {
+                // opponent is observed
+                this.reactionTime -= 1;
+                if (this.reactionTime < 0) {
+                    this.setTargetEntity(opponent);
+                    this.changeState('attack');
+                }
             }
         }
     },
     attack: function(){
-        if (!this.currentTargetEntity() || !this.currentTargetEntity().isAlive) {
-            // opponent killed
-            this.unsetTargetEntity();
-            this.changeState('after attack');
-            return
-        }
-
         this.maxSpeed = this.SHOOTING;
         this.updateTargetEntity();
         this.seek();

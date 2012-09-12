@@ -5,12 +5,12 @@ Game.Antiterrorist = Game.Entity.extend({
 
     collisionRadius: 8,
     healthPoints: 150,
-    reactionTimeMax:80,
+    reactionTimeMax:70,
     reactionTime: -1,
     shootInterval: 30,
     shootTime: -1,
 
-    followDistance: 8,
+    followDistance: 10,
     imageSrc: 'assets/ct.png',
     isLeader: false,
     keypointIndex:-1,
@@ -27,6 +27,7 @@ Game.Antiterrorist = Game.Entity.extend({
         name: 'antiterrorist'
     },
     think: function(){
+        this.watchForEnemy();
         switch(this.currentState) {
             case 'init': this.setup(); break;
             case 'follow entity': this.followEntity(); break;
@@ -36,10 +37,8 @@ Game.Antiterrorist = Game.Entity.extend({
             case 'attack': this.attack(); break;
             default: break;
         }
-        this.watchForEnemy();
     },
     setup: function(){
-        console.log('s');
         if (this.groupIndex == 1) {
                 this.isLeader = true;
                 this.changeState('calculate path');
@@ -51,7 +50,7 @@ Game.Antiterrorist = Game.Entity.extend({
         this.maxSpeed = this.MOVING;
         //TODO: it should be done once in setup, but it did not work
         this.unsetTargetEntity();
-        this.setTargetEntity(Game.entities.get('.antiterrorist')[this.groupIndex-1]);
+        this.setTargetEntity(Game.entities.get('.antiterrorist')[this.groupIndex-2]);
 
         var pos = this.currentTargetEntity().getVecPosition().subtract(this.currentTargetEntity().getVecVelocity().multiply(this.followDistance));
         this.setTarget(pos.e(1), pos.e(2));

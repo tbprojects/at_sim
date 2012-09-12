@@ -37,7 +37,7 @@ Game.Line = Kinetic.Line.extend(
         }
         this.setPoints([this.getStartPoint().x, this.getStartPoint().y, x, y]);
     },
-    getIntersectionPoint: function(line) {
+    getIntersectionPointWithLine: function(line) {
         var denom = (line.getEndPoint().y - line.getStartPoint().y) *
                     (this.getEndPoint().x - this.getStartPoint().x) -
                     (line.getEndPoint().x - line.getStartPoint().x) *
@@ -63,8 +63,20 @@ Game.Line = Kinetic.Line.extend(
         }
         return null;
     },
+    getVecIntersectionPointWithSphere:function (center, radius) {
+        var closestPoint = this._getClosestPointOnLine(center);
+        var distanceVec = center.subtract(closestPoint);
+        var distance  = center.distanceFrom(closestPoint);
+        if (distance > radius) {
+            return null
+        } else if (distance <= 0) {
+            return center;
+        } else {
+            return distanceVec.toUnitVector().multiply(radius - distance);
+        }
+    },
     getVecIntersectionPoint: function(line){
-      var point = this.getIntersectionPoint(line);
+      var point = this.getIntersectionPointWithLine(line);
       if (point) {
         return $V([point.x, point.y]);
       } else {
@@ -75,5 +87,18 @@ Game.Line = Kinetic.Line.extend(
         var dx = this.getEndPoint().x - this.getStartPoint().x;
         var dy = this.getEndPoint().y - this.getStartPoint().y;
         return [$V([-dy, dx]), $V([dy, -dx])];
+    },
+    _getClosestPointOnLine: function(center){
+        var distance  = this.getVecEndPoint().distanceFrom(this.getVecStartPoint());
+        var direction = this.getVecEndPoint().subtract(this.getVecStartPoint());
+        var vecFromSphere = center.subtract(this.getVecStartPoint());
+        var proj = vecFromSphere.dot(direction.toUnitVector());
+        if (proj <= 0) {
+            return this.getVecStartPoint();
+        } else if (proj >= distance) {
+            return this.getVecEndPoint();
+        } else {
+            return direction.toUnitVector().multiply(proj).add(this.getVecStartPoint());
+        }
     }
 }));

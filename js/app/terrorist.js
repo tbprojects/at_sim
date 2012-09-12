@@ -8,7 +8,7 @@ Game.Terrorist = Game.Entity.extend({
     healthPoints: 100,
     reactionTimeMax:100,
     reactionTime: -1,
-    shootInterval: 50,
+    shootInterval: 40,
     shootTime: -1,
 
     imageSrc: 'assets/ter.png',
@@ -31,6 +31,7 @@ Game.Terrorist = Game.Entity.extend({
         name: 'terrorist'
     },
     think: function(){
+        this.watchForEnemy();
         switch(this.currentState) {
             case 'init': this.setup(); break;
             case 'stand': this.stand(); break;
@@ -39,7 +40,6 @@ Game.Terrorist = Game.Entity.extend({
             case 'attack': this.attack(); break;
             default: break;
         }
-        this.watchForEnemy();
         if (this.avoiding) this.wanderOrientation = this.getRotation();
         this.avoiding = this.avoid();
     },
