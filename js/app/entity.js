@@ -178,19 +178,6 @@ Game.Entity = Kinetic.Image.extend(
                 lineToEnemy.setStartPoint(this.getX(), this.getY(), false);
                 lineToEnemy.setEndPoint(enemy.getX(), enemy.getY(), false);
 
-                // checking allies on the way
-                var behindAlly = false;
-                var allies = Game.entities.get('.'+this.getName());
-                for (var j= 0; j < allies.length; j+=1) {
-                    var ally = allies[j];
-                    if (this == ally) continue;
-                    if (lineToEnemy.getVecIntersectionPointWithSphere(ally.getVecPosition(), this.collisionRadius)){
-                        behindAlly = true;
-                        break;
-                    }
-                }
-                if (behindAlly) continue;
-
                 // checking walls on the way
                 var behindWall = false;
                 var walls = Game.map.walls;
@@ -238,8 +225,25 @@ Game.Entity = Kinetic.Image.extend(
                 // opponent is observed
                 this.reactionTime -= 1;
                 if (this.reactionTime < 0) {
-                    this.setTargetEntity(opponent);
-                    this.changeState('attack');
+                    var lineToEnemy = new Game.Line();
+                    lineToEnemy.setStartPoint(this.getX(), this.getY(), false);
+                    lineToEnemy.setEndPoint(opponent.getX(), opponent.getY(), false);
+
+                    // checking allies on the way
+                    var behindAlly = false;
+                    var allies = Game.entities.get('.'+this.getName());
+                    for (var j= 0; j < allies.length; j+=1) {
+                        var ally = allies[j];
+                        if (this == ally) continue;
+                        if (lineToEnemy.getVecIntersectionPointWithSphere(ally.getVecPosition(), this.collisionRadius)){
+                            behindAlly = true;
+                            break;
+                        }
+                    }
+                    if (!behindAlly) {
+                        this.setTargetEntity(opponent);
+                        this.changeState('attack');
+                    }
                 }
             }
         }

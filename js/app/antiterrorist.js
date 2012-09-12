@@ -1,13 +1,13 @@
 Game.Antiterrorist = Game.Entity.extend({
 
-    MOVING: 0.03,
+    MOVING: 0.025,
     SHOOTING: 0.005,
 
     collisionRadius: 8,
     healthPoints: 150,
-    reactionTimeMax:70,
+    reactionTimeMax:50,
     reactionTime: -1,
-    shootInterval: 30,
+    shootInterval: 25,
     shootTime: -1,
 
     followDistance: 10,
@@ -48,9 +48,25 @@ Game.Antiterrorist = Game.Entity.extend({
     },
     followEntity: function(){
         this.maxSpeed = this.MOVING;
-        //TODO: it should be done once in setup, but it did not work
         this.unsetTargetEntity();
-        this.setTargetEntity(Game.entities.get('.antiterrorist')[this.groupIndex-2]);
+
+        var allies  = Game.entities.get('.antiterrorist');
+        var index   = this.groupIndex-1;
+        var ally    = null;
+        do {
+            index -= 1;
+            ally = allies[index];
+        } while(ally && !ally.isAlive);
+
+        if (!ally){
+            // i'm a leader
+            this.isLeader = true;
+            this.keypointIndex = Game.keypointIndex-1;
+            this.changeState('calculate path');
+            return;
+        } else {
+            this.setTargetEntity(ally);
+        }
 
         var pos = this.currentTargetEntity().getVecPosition().subtract(this.currentTargetEntity().getVecVelocity().multiply(this.followDistance));
         this.setTarget(pos.e(1), pos.e(2));
@@ -74,6 +90,7 @@ Game.Antiterrorist = Game.Entity.extend({
             this.keypointIndex += 1;
             this.nodeIndex = 0;
             this.path = this._buildPathTo(Game.map.keypoints[this.keypointIndex]);
+            Game.keypointIndex = this.keypointIndex;
             this.changeState('follow path')
         } else {
             Game.log('Plan executed');

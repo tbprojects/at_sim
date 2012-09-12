@@ -14,6 +14,7 @@ Game = {
     antiterroristsCount: 5,
     terroristsCount: 5,
     timeLimit: 60,
+    keypointIndex: -1,
 
 	init: function() {
 		var self            = this;
