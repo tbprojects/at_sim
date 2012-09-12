@@ -17,10 +17,16 @@ Game.Entity = Kinetic.Image.extend(
     arrivePrecision: 2,
     targetEntity: null,
     watchedEntity: null,
-    path: [],
     healthPoints: 100,
     collisionRadius: 12,
+
+    nodeIndex: -1,
+    path: [],
+
     currentState: 'init',
+
+    checkDirectionTimeMax: 0,
+    checkDirectionTime: 0,
 
     sightDistance: 200,
     enemyName: '',
@@ -256,6 +262,23 @@ Game.Entity = Kinetic.Image.extend(
             Game.entities.add(bullet);
         }
         this.shootTime -=1;
+    },
+    calculatePath: function(x,y) {
+        this.nodeIndex = 0;
+        var startNode = this.getNodeByPosition();
+        var endNode = Game.getNodeByPosition(x,y);
+        this.path = astar.search(Game.map.graph.nodes, startNode, endNode);
+    },
+    checkDirection: function(){
+        var node = this.path[this.nodeIndex];
+        if (this.checkDirectionTime < 0 || !node ) {
+            this.changeToDefaultState();
+        } else {
+            this.setTarget(node.x*Game.mapDensity,node.y*Game.mapDensity);
+            if (this.arrived()) this.nodeIndex += 1;
+            this.checkDirectionTime -= 1;
+            this.seek();
+        }
     },
     _reactOnDamage: function(shooter){},
     _logDeath: function(){

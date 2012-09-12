@@ -1,6 +1,7 @@
 Game.Terrorist = Game.Entity.extend({
 
-    RUNNING: 0.02,
+    RUNNING: 0.04,
+    MOVING: 0.02,
     WALKING: 0.01,
     SHOOTING: 0.005,
 
@@ -21,6 +22,9 @@ Game.Terrorist = Game.Entity.extend({
     standingTimeMax: 200,
     standingTime:-1,
 
+    checkDirectionTimeMax: 1000,
+    checkDirectionTime: 0,
+
     enemyName: 'antiterrorist',
 
     defaultConfig: {
@@ -33,12 +37,13 @@ Game.Terrorist = Game.Entity.extend({
     think: function(){
         this.watchForEnemy();
         switch(this.currentState) {
+            case 'idle': break;
             case 'init': this.setup(); break;
             case 'stand': this.stand(); break;
             case 'wander': this.wander(); break;
-            case 'after attack': this.afterAttack(); break;
+            case 'check direction': this.checkDirection(); break;
             case 'attack': this.attack(); break;
-            default: break;
+            default: this.changeToDefaultState(); break;
         }
         if (this.avoiding) this.wanderOrientation = this.getRotation();
         this.avoiding = this.avoid();
@@ -60,7 +65,7 @@ Game.Terrorist = Game.Entity.extend({
         this.setTarget(target.e(1),target.e(2));
         this.seek();
     },
-    afterAttack: function(){
+    changeToDefaultState: function(){
         this.changeState('wander');
     },
     _wantToStand: function(){
@@ -71,5 +76,11 @@ Game.Terrorist = Game.Entity.extend({
             return true;
         }
         return false;
+    },
+    _reactOnDamage: function(shooter){
+        this.maxSpeed = this.MOVING;
+        this.checkDirectionTime = this.checkDirectionTimeMax;
+        this.calculatePath(shooter.getX(), shooter.getY());
+        this.changeState('check direction');
     }
 });

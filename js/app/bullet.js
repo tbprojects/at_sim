@@ -5,7 +5,7 @@ Game.Bullet = Game.Entity.extend({
     collisionRadius: 4,
     imageSrc: 'assets/bullet.png',
     shooter: null,
-    energy: 150,
+    energy: 75,
     bulletRange: 1000,
     dieAlpha: 0,
 
@@ -47,7 +47,7 @@ Game.Bullet = Game.Entity.extend({
             this.die();
             entityHit.takeDamage(this.energy, this.shooter);
         }
-        this.energy -= 1;
+        this.energy -= 0.5;
         this.seek();
     },
     _logDeath: function(){}

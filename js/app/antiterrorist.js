@@ -13,9 +13,10 @@ Game.Antiterrorist = Game.Entity.extend({
     followDistance: 10,
     imageSrc: 'assets/ct.png',
     isLeader: false,
-    keypointIndex:-1,
-    nodeIndex: -1,
-    path: [],
+    keypointIndex:0,
+
+    checkDirectionTimeMax: 40,
+    checkDirectionTime: 0,
 
     enemyName: 'terrorist',
 
@@ -29,22 +30,17 @@ Game.Antiterrorist = Game.Entity.extend({
     think: function(){
         this.watchForEnemy();
         switch(this.currentState) {
+            case 'idle': break;
             case 'init': this.setup(); break;
             case 'follow entity': this.followEntity(); break;
             case 'follow path': this.followPath(); break;
-            case 'calculate path': this.calculatePath(); break;
-            case 'after attack': this.afterAttack(); break;
+            case 'check direction': this.checkDirection(); break;
             case 'attack': this.attack(); break;
-            default: break;
+            default: this.changeToDefaultState(); break;
         }
     },
     setup: function(){
-        if (this.groupIndex == 1) {
-                this.isLeader = true;
-                this.changeState('calculate path');
-            } else {
-                this.changeState('follow entity')
-            }
+        this.changeState('follow entity')
     },
     followEntity: function(){
         this.maxSpeed = this.MOVING;
@@ -61,8 +57,10 @@ Game.Antiterrorist = Game.Entity.extend({
         if (!ally){
             // i'm a leader
             this.isLeader = true;
-            this.keypointIndex = Game.keypointIndex-1;
-            this.changeState('calculate path');
+            this.keypointIndex = Game.keypointIndex;
+            var target = Game.map.keypoints[this.keypointIndex];
+            this.calculatePath(target.getX(),target.getY());
+            this.changeState('follow path');
             return;
         } else {
             this.setTargetEntity(ally);
@@ -77,33 +75,28 @@ Game.Antiterrorist = Game.Entity.extend({
         var node = this.path[this.nodeIndex];
         if (!node) {
             Game.log('Keypoint #'+(this.keypointIndex+1)+' reached');
-            this.changeState('calculate path');
+            var target = Game.map.keypoints[this.keypointIndex+1];
+            if (!target) {
+                Game.log('Plan executed');
+                this.stop();
+                this.changeState('idle');
+            } else {
+                this.keypointIndex += 1;
+                Game.keypointIndex = this.keypointIndex;
+                this.calculatePath(target.getX(),target.getY());
+            }
         } else {
             if (this.arrived()) this.nodeIndex += 1;
             this.setTarget(node.x*Game.mapDensity,node.y*Game.mapDensity);
             this.seek();
         }
     },
-    calculatePath: function() {
-        var nextKeypoint = Game.map.keypoints[this.keypointIndex+1];
-        if (nextKeypoint) {
-            this.keypointIndex += 1;
-            this.nodeIndex = 0;
-            this.path = this._buildPathTo(Game.map.keypoints[this.keypointIndex]);
-            Game.keypointIndex = this.keypointIndex;
-            this.changeState('follow path')
-        } else {
-            Game.log('Plan executed');
-            this.stop();
-            this.changeState('idle');
-        }
+    changeToDefaultState: function(){
+        this.changeState('follow entity')
     },
-    afterAttack: function(){
-        this.isLeader ?  this.changeState('follow path') : this.changeState('follow entity')
-    },
-    _buildPathTo: function(object){
-        var startNode = this.getNodeByPosition();
-        var endNode = object.getNodeByPosition();
-        return astar.search(Game.map.graph.nodes, startNode, endNode);
+    _reactOnDamage: function(shooter){
+        this.checkDirectionTime = this.checkDirectionTimeMax;
+        this.calculatePath(shooter.getX(), shooter.getY());
+        this.changeState('check direction');
     }
 });

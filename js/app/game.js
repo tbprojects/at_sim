@@ -14,7 +14,7 @@ Game = {
     antiterroristsCount: 5,
     terroristsCount: 5,
     timeLimit: 60,
-    keypointIndex: -1,
+    keypointIndex: 0,
 
 	init: function() {
 		var self            = this;
@@ -48,6 +48,13 @@ Game = {
     getEntities: function(){
         return this.entities.getChildren();
     },
+    getNodeByPosition: function(x, y){
+        x = Math.round(x/Game.mapDensity);
+        y = Math.round(y/Game.mapDensity);
+        var node;
+        try { node = Game.map.graph.nodes[x][y] } catch(e) { node = null}
+        return node;
+    },
 
 // ************* STATES *********************
 // ******************************************
@@ -68,6 +75,7 @@ Game = {
 	},
 	endGame: function(){
         this.entities.removeChildren();
+        Game.keypointIndex = 0;
         Game.paused = false;
 	},
     _spawnTerrorists: function(){
