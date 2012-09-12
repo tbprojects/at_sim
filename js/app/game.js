@@ -70,11 +70,13 @@ Game = {
 	startGame: function(){
         this._spawnTerrorists();
         this._spawnAntiterrorists();
+        Game.createEntitiesList();
         Game.log('Simulation started');
         Game.paused = false;
 	},
 	endGame: function(){
         this.entities.removeChildren();
+        Game.clearEntitiesList();
         Game.keypointIndex = 0;
         Game.paused = false;
 	},

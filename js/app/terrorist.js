@@ -7,6 +7,7 @@ Game.Terrorist = Game.Entity.extend({
 
     collisionRadius: 8,
     healthPoints: 100,
+    healthPointsMax: 100,
     reactionTimeMax:55,
     reactionTime: -1,
     shootInterval: 30,

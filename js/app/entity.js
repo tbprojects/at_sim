@@ -19,6 +19,7 @@ Game.Entity = Kinetic.Image.extend(
     watchedEntity: null,
     healthPoints: 100,
     collisionRadius: 12,
+    kills: 0,
 
     nodeIndex: -1,
     path: [],
@@ -203,8 +204,11 @@ Game.Entity = Kinetic.Image.extend(
         this._reactOnDamage(shooter);
         this.healthPoints -= damage;
         if (this.healthPoints < 0) {
+            shooter.kills += 1;
             this.die();
         }
+        Game.updateStat(shooter);
+        Game.updateStat(this);
     },
     watchForEnemy: function(){
         var opponent = this.closestSeenOpponent();

@@ -8,6 +8,9 @@ GameControl = {
             $('#load_config_name').append('<option value="'+cfs[name]+'">'+name+'</option>');
         }
         Game.log = GameControl.log;
+        Game.createEntitiesList = GameControl.createEntitiesList;
+        Game.clearEntitiesList = GameControl.clearEntitiesList;
+        Game.updateStat = GameControl.updateStat;
     },
     log: function(text) {
         var date = new Date();
@@ -102,6 +105,29 @@ GameControl = {
         }
         Game.uiState = uiState;
         this._updateCursor();
+    },
+    clearEntitiesList: function(){
+        $('#at_list tbody').html('');
+        $('#ter_list tbody').html('');
+    },
+    createEntitiesList: function(){
+        var ats = Game.entities.get('.antiterrorist');
+        var ters = Game.entities.get('.terrorist');
+        var i;
+
+        for (i=0; i<ats.length; i+=1) {
+            $('#at_list tbody').append('<tr id="'+ats[i].getName()+ats[i].groupIndex+'"></tr>');
+            this.updateStat(ats[i]);
+        }
+        for (i=0; i<ters.length; i+=1) {
+            $('#ter_list tbody').append('<tr id="'+ters[i].getName()+ters[i].groupIndex+'"></tr>');
+            this.updateStat(ters[i]);
+        }
+    },
+    updateStat: function(entity){
+        $('#'+entity.getName()+entity.groupIndex).html('<td class="name">'+entity.getName()+" #"+entity.groupIndex+'</td>'+
+            '<td class="hp"><div><div style="width: '+Math.max((entity.healthPoints/entity.healthPointsMax)*100,0)+'%"></div></div></td>'+
+            '<td class="kills">'+entity.kills+'</td>');
     },
     _updateCursor: function(){
         if (['draw zone', 'draw keypoints'].indexOf(Game.uiState) != -1) {
