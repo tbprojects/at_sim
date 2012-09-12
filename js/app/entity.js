@@ -15,7 +15,7 @@ Game.Entity = Kinetic.Image.extend(
     avoidDistance: 12,
     lookAhead: 14,
     arrivePrecision: 2,
-    targetEntityStack: [],
+    targetEntity: null,
     watchedEntity: null,
     path: [],
     healthPoints: 100,
@@ -51,17 +51,14 @@ Game.Entity = Kinetic.Image.extend(
         this.tarY = y;
     },
     setTargetEntity: function(entity){
-        this.targetEntityStack.push(entity);
+        this.targetEntity = entity;
         this.updateTargetEntity();
     },
     currentTargetEntity: function(){
-        return this.targetEntityStack[this.targetEntityStack.length-1];
+        return this.targetEntity;
     },
     unsetTargetEntity: function(){
-        this.targetEntityStack.pop();
-        if (this.currentTargetEntity()) {
-            this.setTarget(this.currentTargetEntity().getX(), this.currentTargetEntity().getY());
-        }
+        this.targetEntity = null;
     },
     updateTargetEntity: function(){
         this.setTarget(this.currentTargetEntity().getX(), this.currentTargetEntity().getY());
