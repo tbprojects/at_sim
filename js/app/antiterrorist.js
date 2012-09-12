@@ -3,6 +3,13 @@ Game.Antiterrorist = Game.Entity.extend({
     MOVING: 0.03,
     SHOOTING: 0.005,
 
+    collisionRadius: 8,
+    healthPoints: 150,
+    reactionTimeMax:80,
+    reactionTime: -1,
+    shootInterval: 30,
+    shootTime: -1,
+
     followDistance: 8,
     imageSrc: 'assets/ct.png',
     isLeader: false,
@@ -25,11 +32,15 @@ Game.Antiterrorist = Game.Entity.extend({
             case 'follow entity': this.followEntity(); break;
             case 'follow path': this.followPath(); break;
             case 'calculate path': this.calculatePath(); break;
+            case 'after attack': this.afterAttack(); break;
+            case 'attack': this.attack(); break;
             default: break;
         }
+        this.watchForEnemy();
     },
     setup: function(){
-        if (this.groupIndex == 0) {
+        console.log('s');
+        if (this.groupIndex == 1) {
                 this.isLeader = true;
                 this.changeState('calculate path');
             } else {
@@ -70,6 +81,9 @@ Game.Antiterrorist = Game.Entity.extend({
             this.stop();
             this.changeState('idle');
         }
+    },
+    afterAttack: function(){
+        this.isLeader ?  this.changeState('follow path') : this.changeState('follow entity')
     },
     _buildPathTo: function(object){
         var startNode = this.getNodeByPosition();

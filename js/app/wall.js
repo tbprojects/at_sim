@@ -10,8 +10,8 @@ Game.Wall = Game.Line.extend(
         listening: false,
         name: 'wall'
     },
-    setEndPoint: function(x,y){
-        this._super(x,y);
+    setEndPoint: function(x,y, snap){
+        this._super(x,y, snap);
         this._validate();
     },
     isVertical: function(){

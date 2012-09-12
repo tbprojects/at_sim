@@ -23,19 +23,19 @@ Game.Line = Kinetic.Line.extend(
     getVecEndPoint: function(){
       return $V([this.getEndPoint().x, this.getEndPoint().y])
     },
-    setStartPoint: function(x,y){
-        this.setPoints([
-            this._snapToGrid(x),
-            this._snapToGrid(y)
-        ]);
+    setStartPoint: function(x,y, snap){
+        if (snap) {
+            x = this._snapToGrid(x);
+            y = this._snapToGrid(y);
+        }
+        this.setPoints([x, y]);
     },
-    setEndPoint: function(x,y){
-        this.setPoints([
-            this.getStartPoint().x,
-            this.getStartPoint().y,
-            this._snapToGrid(x),
-            this._snapToGrid(y)
-        ]);
+    setEndPoint: function(x,y, snap){
+        if (snap) {
+            x = this._snapToGrid(x);
+            y = this._snapToGrid(y);
+        }
+        this.setPoints([this.getStartPoint().x, this.getStartPoint().y, x, y]);
     },
     getIntersectionPoint: function(line) {
         var denom = (line.getEndPoint().y - line.getStartPoint().y) *

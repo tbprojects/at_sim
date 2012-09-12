@@ -8,14 +8,17 @@ Game.Entity = Kinetic.Image.extend(
     tarX: null,
     tarY: null,
     rayLine: null,
-    groupIndex: 0,
+    groupIndex: 1,
     isAlive: true,
+    dieAlpha: 0.5,
     speed: 0,
     avoidDistance: 12,
-    lookAhead: 12,
+    lookAhead: 14,
     arrivePrecision: 2,
     targetEntityStack: [],
     path: [],
+    healthPoints: 100,
+    collisionRadius: 12,
     currentState: 'init',
 
     sightDistance: 200,
@@ -34,8 +37,8 @@ Game.Entity = Kinetic.Image.extend(
         this._super(config || {});
         this.groupIndex  = config.groupIndex;
         this.rayLine = new Game.Line({stroke: 'red'});
-        this.rayLine.setStartPoint(this.getX(),this.getY());
-        this.rayLine.setEndPoint(this.getX(),this.getY());
+        this.rayLine.setStartPoint(this.getX(),this.getY(), false);
+        this.rayLine.setEndPoint(this.getX(),this.getY(), false);
         var image = new Image();
         image.src = this.imageSrc;
         this.setImage(image);
@@ -48,7 +51,7 @@ Game.Entity = Kinetic.Image.extend(
     },
     setTargetEntity: function(entity){
         this.targetEntityStack.push(entity);
-        this.setTarget(entity.getX(), entity.getY());
+        this.updateTargetEntity();
     },
     currentTargetEntity: function(){
         return this.targetEntityStack[this.targetEntityStack.length-1];
@@ -58,6 +61,9 @@ Game.Entity = Kinetic.Image.extend(
         if (this.currentTargetEntity()) {
             this.setTarget(this.currentTargetEntity().getX(), this.currentTargetEntity().getY());
         }
+    },
+    updateTargetEntity: function(){
+        this.setTarget(this.currentTargetEntity().getX(), this.currentTargetEntity().getY());
     },
     setVelocity: function(x,y) {
         this.velX = x;
@@ -76,7 +82,7 @@ Game.Entity = Kinetic.Image.extend(
       return $V([this.tarX, this.tarY])
     },
     update: function(frame) {
-        if (!Game.paused) {
+        if (!Game.paused && this.isAlive) {
             this.think();
             if (this.hasVelocity()) {
                 this._updateCollisionRay();
@@ -95,6 +101,9 @@ Game.Entity = Kinetic.Image.extend(
     },
     die: function(){
         this.isAlive = false;
+        this.setAlpha(this.dieAlpha);
+        this.changeState('idle');
+        this._logDeath();
     },
     setRandomPositionInCircle: function(center, radius){
         var theta = Math.random() * Math.PI * 2;
@@ -105,13 +114,18 @@ Game.Entity = Kinetic.Image.extend(
         this.setPosition(pos.e(1), pos.e(2));
     },
     isInCollision: function(){
-        var node = this.getNodeByPosition();
-        if (!node || node.type == GraphNodeType.WALL) return true;
+        for (i in Game.map.walls) {
+            var wall = Game.map.walls[i];
+            if (this.rayLine.getIntersectionPoint(wall)) {
+                return true;
+            }
+        }
         for (i in Game.getEntities()) {
             var entity = Game.getEntities()[i];
+            if (!entity.isAlive) continue;
             var distance = this.getVecPosition().distanceFrom(entity.getVecPosition());
-            var radiusSum = this.getWidth()+entity.getWidth();
-            if (this != entity && distance < radiusSum) return true;
+            var radiusSum = this.collisionRadius+entity.collisionRadius;
+            if (this != entity && distance < radiusSum) return entity;
         }
         return false;
     },
@@ -155,13 +169,14 @@ Game.Entity = Kinetic.Image.extend(
         var enemies = Game.entities.get('.'+this.enemyName);
         for (var i in enemies) {
             var enemy = enemies[i];
+            if (!enemy.isAlive) continue;
             lDist = this.getVecPosition().distanceFrom(enemy.getVecPosition());
             sDist = this.rayLine.getVecEndPoint().distanceFrom(enemy.getVecPosition());
             if (sDist < lDist && sDist < resultDistance) {
                 var lineToEnemy = new Game.Line();
                 var behindWall = false;
-                lineToEnemy.setStartPoint(this.getX(), this.getY());
-                lineToEnemy.setEndPoint(enemy.getX(), enemy.getY());
+                lineToEnemy.setStartPoint(this.getX(), this.getY(), false);
+                lineToEnemy.setEndPoint(enemy.getX(), enemy.getY(), false);
 
                 for (var k in Game.map.walls) {
                     var wall = Game.map.walls[k];
@@ -178,11 +193,61 @@ Game.Entity = Kinetic.Image.extend(
         }
         return result;
     },
+    takeDamage: function(damage, shooter) {
+        this._reactOnDamage(shooter);
+        this.healthPoints -= damage;
+        if (this.healthPoints < 0) {
+            this.die();
+        }
+    },
+    watchForEnemy: function(){
+        var opponent = this.closestSeenOpponent();
+        if (!opponent){
+            if (this.currentTargetEntity() && this.currentTargetEntity().getName() == this.enemyName) {
+                // lost opponent from sight
+                this.unsetTargetEntity();
+                this.changeState('after attack');
+                return
+            }
+            this.reactionTime = this.reactionTimeMax;
+        }
+        if (opponent && opponent != this.currentTargetEntity()) {
+            // opponent seen
+            this.reactionTime -= 1;
+            if (this.reactionTime < 0) {
+                this.setTargetEntity(opponent);
+                this.changeState('attack');
+            }
+        }
+    },
+    attack: function(){
+        if (!this.currentTargetEntity() || !this.currentTargetEntity().isAlive) {
+            // opponent killed
+            this.unsetTargetEntity();
+            this.changeState('after attack');
+            return
+        }
+
+        this.maxSpeed = this.SHOOTING;
+        this.updateTargetEntity();
+        this.seek();
+        if (this.shootTime < 0) {
+            // shoot at opponent
+            this.shootTime = this.shootInterval;
+            var bullet = new Game.Bullet({ shooter: this });
+            Game.entities.add(bullet);
+        }
+        this.shootTime -=1;
+    },
+    _reactOnDamage: function(shooter){},
+    _logDeath: function(){
+        Game.log(this.getName()+' #'+this.groupIndex+' killed');
+    },
     _updateCollisionRay: function(){
         var rayVector = this.getVecVelocity().toUnitVector().multiply(this.lookAhead);
         var rayEndPos = this.getVecPosition().add(rayVector);
-        this.rayLine.setStartPoint(this.getX(), this.getY());
-        this.rayLine.setEndPoint(rayEndPos.e(1), rayEndPos.e(2));
+        this.rayLine.setStartPoint(this.getX(), this.getY(), false);
+        this.rayLine.setEndPoint(rayEndPos.e(1), rayEndPos.e(2), false);
     },
     _calculateVelocity: function(vector){
         var desired_velocity = vector.multiply(this.maxSpeed);

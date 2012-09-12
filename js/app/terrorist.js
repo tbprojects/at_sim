@@ -4,6 +4,13 @@ Game.Terrorist = Game.Entity.extend({
     WALKING: 0.01,
     SHOOTING: 0.005,
 
+    collisionRadius: 8,
+    healthPoints: 100,
+    reactionTimeMax:100,
+    reactionTime: -1,
+    shootInterval: 50,
+    shootTime: -1,
+
     imageSrc: 'assets/ter.png',
 
     wanderCircleDistance: 50,
@@ -13,7 +20,6 @@ Game.Terrorist = Game.Entity.extend({
     standingProbability: 0.001,
     standingTimeMax: 200,
     standingTime:-1,
-
 
     enemyName: 'antiterrorist',
 
@@ -29,8 +35,11 @@ Game.Terrorist = Game.Entity.extend({
             case 'init': this.setup(); break;
             case 'stand': this.stand(); break;
             case 'wander': this.wander(); break;
+            case 'after attack': this.afterAttack(); break;
+            case 'attack': this.attack(); break;
             default: break;
         }
+        this.watchForEnemy();
         if (this.avoiding) this.wanderOrientation = this.getRotation();
         this.avoiding = this.avoid();
     },
@@ -50,6 +59,9 @@ Game.Terrorist = Game.Entity.extend({
         var target = circlePos.add(circleOffset);
         this.setTarget(target.e(1),target.e(2));
         this.seek();
+    },
+    afterAttack: function(){
+        this.changeState('wander');
     },
     _wantToStand: function(){
         if (this.standingTime < 0 && Math.random() < this.standingProbability) {

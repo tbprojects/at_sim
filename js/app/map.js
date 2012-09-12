@@ -154,12 +154,12 @@ Game.Map = Kinetic.Rect.extend({
         this.newWall = new Game.Wall();
         Game.configObjects.add(this.newWall);
         var pos = Game.stage.getMousePosition();
-        this.newWall.setStartPoint(pos.x, pos.y);
+        this.newWall.setStartPoint(pos.x, pos.y, true);
     },
     _updateWall:function(){
         if (this.newWall) {
             var pos = Game.stage.getMousePosition();
-            this.newWall.setEndPoint(pos.x, pos.y);
+            this.newWall.setEndPoint(pos.x, pos.y, true);
         }
     },
     _addWall: function() {
