@@ -1,0 +1,13 @@
+Todo:
+- zakończenie symulacji
+- formacja antyterrorystów podczas strzelania
+- reakcja terrorystów na dźwięk strzałów
+- assety (dźwięk)
+
+Notatki:
+- dużo implementacji (model ai, algorytmy, taktyki)
+- słownik do pojęć w grze
+- dlaczego javascript (znajomość wymagania), trochę o technologi
+
+
+

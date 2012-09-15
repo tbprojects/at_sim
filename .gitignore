@@ -1,1 +1,12 @@
 .idea
+doc/.*
+doc/chapters/.*
+doc/*.aux
+doc/*.bbl
+doc/*.lof
+doc/*.log
+doc/*.out
+doc/*.toc
+doc/*.lot
+doc/*.blg
+texput.log
