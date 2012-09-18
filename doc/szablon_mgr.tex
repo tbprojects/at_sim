@@ -6,7 +6,7 @@
 % Uwaga! Po każdej większej zmianie oraz przed ostatecznym drukiem plik należy przeLaTeXować trzy razy pod
 % rząd, aby referencje, cytowania oraz spis treści miały szansę złożyć się we właściwy sposób.
 
-\documentclass[12pt,a4paper]{amsbook}
+\documentclass[12pt,a4paper,oneside]{amsbook}
 
 \usepackage[utf8]{inputenc}
 \usepackage{amssymb} % To pakiet z dodatkowymi symbolami matematycznymi
@@ -17,9 +17,17 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{listings}
+\usepackage{anysize}
+\usepackage{setspace}
+
+%marginesy
+	\marginsize{3.5cm}{2.5cm}{2.5cm}{2.5cm}
+
+	\numberwithin{figure}{section}  % numerowanie obrazków, prefiksowane numerem sekcji
+	\numberwithin{table}{section}   % numerowanie tabel, prefiksowane numerem sekcji
 
 %interlinia
-	\linespread{1.6}
+	\doublespacing
 	
 %ustawienia linków (brak obramowania)
 	\hypersetup{
@@ -60,10 +68,16 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 % Spis treści
 \tableofcontents % Spis treści jest generowany automatycznie przez LaTeXa
 \let\cleardoublepage\clearpage % To taka mała sztuczka, która nie pozwala LaTeXowi wstawiać pustych stron przed nowymi rozdziałami
-\pagestyle{myheadings} \markboth{}{} % Ta komenda pozwala pozbyć się nagłówków stron
+\pagestyle{plain} % Ta komenda pozwala pozbyć się nagłówków stron
+
+% Oświadczenie
+\input{chapters/oswiadczenie.tex}
 
 % Wstęp 
 \input{chapters/wprowadzenie.tex}
+
+% Wstęp 
+\input{chapters/rozdzial_1.tex}
 
 % Literatura:
 \bibliographystyle{unsrt}
