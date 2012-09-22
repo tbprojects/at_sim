@@ -1,11 +1,21 @@
 Sounds = {
-	list: {},
+    init: function(){
+        Game.sounds = this;
+    },
+	list: {
+        at_fire: 'assets/sounds/at_fire.mp3',
+        ter_fire: 'assets/sounds/ter_fire.mp3',
+        ambiance: 'assets/sounds/ambiance.mp3'
+    },
+
+    instances: {},
 
 	play: function(name, attrs) {
-		this.list[name].play();
+        this.instances[name] = new Audio(Sounds.list[name]);
+        this.instances[name].play();
 	},
 
 	stop: function(name) {
-		this.list[name].pause();
+        this.instances[name].pause();
 	}
 };

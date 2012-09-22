@@ -89,10 +89,12 @@ Game = {
         this._spawnAntiterrorists();
         Game.createEntitiesList();
         Game.log('SIMULATION STARTED', 'blue');
+        Game.sounds.play('ambiance');
         Game.paused = false;
 	},
 	endGame: function(){
         this.entities.removeChildren();
+        Game.sounds.stop('ambiance');
         Game.clearEntitiesList();
         Game.keypointIndex = 0;
         Game.paused = false;

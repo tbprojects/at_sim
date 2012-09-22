@@ -26,6 +26,7 @@ Game.Bullet = Game.Entity.extend({
            var target = this.getVecPosition().add(this.shooter.getVecVelocity().multiply(this.bulletRange));
            this.setTarget(target.e(1), target.e(2));
            this._drawTerroristsAttention();
+           this._playSound();
            return this;
    	},
     think: function(){
@@ -62,6 +63,13 @@ Game.Bullet = Game.Entity.extend({
             if (distance < this.attentionRange){
                 ter.setCheckDirection(this);
             }
+        }
+    },
+    _playSound: function(){
+        if (this.shooter.getName() == 'terrorist') {
+            Game.sounds.play('ter_fire');
+        } else {
+            Game.sounds.play('at_fire');
         }
     },
     _logDeath: function(){}
