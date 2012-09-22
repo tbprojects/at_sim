@@ -5,7 +5,7 @@ Game.Bullet = Game.Entity.extend({
     collisionRadius: 4,
     imageSrc: 'assets/bullet.png',
     shooter: null,
-    energy: 75,
+    energy: 50,
     bulletRange: 1000,
     dieAlpha: 0,
 

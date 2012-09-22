@@ -22,7 +22,7 @@ GameControl = {
     },
     setWinMessage: function(text) {
         clearTimeout(GameControl.winMessage);
-        setTimeout(function(){
+        GameControl.winMessage = setTimeout(function(){
             GameControl.log(text, 'blue');
         }, 2000);
     },

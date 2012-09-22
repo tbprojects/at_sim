@@ -8,7 +8,7 @@ Game.Antiterrorist = Game.Entity.extend({
     healthPointsMax: 150,
     reactionTimeMax:50,
     reactionTime: -1,
-    shootInterval: 25,
+    shootInterval: 10,
     shootTime: -1,
 
     followDistance: 10,
