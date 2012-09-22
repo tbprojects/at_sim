@@ -35,6 +35,7 @@ Game.Antiterrorist = Game.Entity.extend({
             case 'init': this.setup(); break;
             case 'follow entity': this.followEntity(); break;
             case 'follow path': this.followPath(); break;
+            case 'follow extraction': this.followExtraction(); break;
             case 'check direction': this.checkDirection(); break;
             case 'attack': this.attack(); break;
             default: this.changeToDefaultState(); break;
@@ -78,9 +79,9 @@ Game.Antiterrorist = Game.Entity.extend({
             Game.log('Keypoint #'+(this.keypointIndex+1)+' reached');
             var target = Game.map.keypoints[this.keypointIndex+1];
             if (!target) {
-                Game.log('Plan executed');
-                this.stop();
-                this.changeState('idle');
+                target = Game.map.zone;
+                this.calculatePath(target.getX(),target.getY());
+                this.changeState('follow extraction');
             } else {
                 this.keypointIndex += 1;
                 Game.keypointIndex = this.keypointIndex;
@@ -89,6 +90,18 @@ Game.Antiterrorist = Game.Entity.extend({
         } else {
             if (this.arrived()) this.nodeIndex += 1;
             this.setTarget(node.x*Game.mapDensity,node.y*Game.mapDensity);
+            this.seek();
+        }
+    },
+    followExtraction: function(){
+        var node = this.path[this.nodeIndex];
+        if (!node ) {
+            Game.log('Plan executed');
+            this.stop();
+            this.changeState('idle');
+        } else {
+            this.setTarget(node.x*Game.mapDensity,node.y*Game.mapDensity);
+            if (this.arrived()) this.nodeIndex += 1;
             this.seek();
         }
     },

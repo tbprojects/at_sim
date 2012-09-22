@@ -140,7 +140,6 @@ GameControl = {
     _updateNumberData: function(){
         Game.antiterroristsCount = parseInt($('#antiterrorists_count').val());
         Game.terroristsCount = parseInt($('#terrorists_count').val());
-        Game.timeLimit = parseInt($('#time_limit').val());
     },
     _updateConfigStatus: function(){
         var errorMessages = [];
@@ -152,8 +151,6 @@ GameControl = {
             errorMessages.push('Number of antiterrorists must be greater number then 0');
         if (isNaN(Game.terroristsCount) || Game.terroristsCount < 1)
             errorMessages.push('Number of terrorists must be greater number then 0');
-        if (isNaN(Game.timeLimit) || Game.timeLimit < 1)
-            errorMessages.push('Time limit must be greater number then 0');
 
         $('#error_page ul').html('');
         for (var i in errorMessages) {
