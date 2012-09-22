@@ -82,13 +82,14 @@
                 </div>
 
                 <div data-ui-state="draw zone" class="stage">
-                    <h3>(Step 2/4) Set antiterrorist spawn zone</h3>
+                    <h3>(Step 2/4) Set antiterrorist zone</h3>
                     <p class="hint">
-                        Press left mouse button to set spawn zone for antiterrorists.
+                        Press left mouse button to set spawn / extraction zone for antiterrorists.
+                        This is a zone from which antiterrorists will start and finish their assault.
                     </p>
                     <ul>
                         <li>
-                            <label>Remove spawn zone</label>
+                            <label>Remove spawn / extraction zone</label>
                             <button onclick="GameControl.removeSpawnZone()">Remove</button>
                         </li>
                     </ul>
@@ -99,7 +100,7 @@
                     <p class="hint">
                         Press left mouse button to set keypoint.<br/>
                         Terrorists will be spawned near keypoints.<br/>
-                        Keypoints define assult path for antiterrorists.<br/>
+                        Keypoints define assault path for antiterrorists.<br/>
                     </p>
                     <ul>
                         <li>
@@ -179,31 +180,35 @@
             </div>
         </div>
 
-        <div class="box" id="entities">
+        <div class="box large" id="entities">
             <h2>Entities</h2>
             <div class="box-content">
-                <h3>Antiterrorists</h3>
-                <table id="at_list">
-                    <thead>
-                        <tr>
-                            <td>Name</td>
-                            <td>Health</td>
-                            <td>Kills</td>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <h3>Terrorists</h3>
-                <table id="ter_list">
-                    <thead>
-                        <tr>
-                            <td>Name</td>
-                            <td>Health</td>
-                            <td>Kills</td>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="half">
+                    <h3>Antiterrorists</h3>
+                    <table id="at_list">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Health</td>
+                                <td>Kills</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="half">
+                    <h3>Terrorists</h3>
+                    <table id="ter_list">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Health</td>
+                                <td>Kills</td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

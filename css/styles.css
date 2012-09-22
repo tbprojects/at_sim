@@ -46,6 +46,13 @@ button
     border: 2px solid #ccc;
 }
 
+#control-panel .box.large
+{
+    float:left;
+    width: 640px;
+    border: 2px solid #ccc;
+}
+
 #control-panel .box .box-content
 {
     background: #fff;
@@ -139,7 +146,7 @@ button
 
 #logs .box-content
 {
-    height: 85px;
+    height: 110px;
 }
 
 #logs table
@@ -176,4 +183,9 @@ button
 #entities td.hp > div > div {
     background: green;
     height:6px;
+}
+
+#entities .half {
+    float:left;
+    width: 50%;
 }

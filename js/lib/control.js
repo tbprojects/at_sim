@@ -1,6 +1,7 @@
 GameControl = {
 
     storagePrefix: 'sss_map_',
+    simStartTime: null,
 
     init: function(){
         var cfs = this.configs();
@@ -13,9 +14,8 @@ GameControl = {
         Game.updateStat = GameControl.updateStat;
     },
     log: function(text) {
-        var date = new Date();
-        time = date.toTimeString().substring(0,8);
-        $('#logs tbody').prepend('<tr><td>'+text+'</td><td>'+time+'</td></tr>');
+        var time = ((Date.now() - GameControl.simStartTime)/1000).toFixed(1);
+        $('#logs tbody').prepend('<tr><td>'+text+'</td><td>'+time+'s</td></tr>');
     },
     configs: function() {
         result = {};
@@ -54,6 +54,7 @@ GameControl = {
         }
     },
     startSim: function() {
+        this.simStartTime = Date.now();
         Game.startGame();
         $('.state_button').hide();
         $('#start_button').attr('disabled','disabled');
