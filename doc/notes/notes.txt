@@ -1,8 +1,8 @@
 Todo:
-- zakończenie symulacji
++ zakończenie symulacji
 - formacja antyterrorystów podczas strzelania
-- reakcja terrorystów na dźwięk strzałów
-- assety (dźwięk)
++ reakcja terrorystów na dźwięk strzałów
++ assety (dźwięk)
 
 Notatki:
 - dużo implementacji (model ai, algorytmy, taktyki)
