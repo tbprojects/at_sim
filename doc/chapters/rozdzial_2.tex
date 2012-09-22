@@ -121,20 +121,44 @@ Prócz scenariuszy, użytecznym elementem specyfikacji był szkic interfejsu uż
 \end{figure}
 
 \section{Wymagania niefunkcjonalne}
+Zestaw wymagań niefunkcjonalnych dla gry symulacyjnej, będącej przedmiotem tej pracy dyplomowej, została przedstawione w tabeli \ref{nonFunc}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|p{1.0\textwidth}|}
+\hline
+	\begin{itemize}
+		\setlength\itemsep{0pt}		
+		\item System operacyjny: Windows, Linux lub MacOS
+		\item Przeglądarka internetowa: 
+			\begin{itemize}
+				\item Chrome w wersji 15.0 lub wyższej
+				\item Firefox w wersji 4.0 lub wyższej
+				\item Internet Explorer w wersji 9.0 lub wyższej
+				\item Safari w wersji 5.1 lub wyższej
+			\end{itemize} 
+	\end{itemize}
+\\\hline
+\end{tabular}
+\caption {Lista wymagań niefunkcjonalnych\label{nonFunc}}
+\end{center}
+\end{table} 
+
 \section{Słownik pojęć}\label{dictonary}
 Podczas sporządzania specyfikacji gry symulacyjnej, która jest przedmiotem tej pracy dyplomowej, niezbędne było dokładne zdefiniowanie niektórych wykorzystywanych pojęć. Poniżej znajduje się lista pojęć, uporządkowana alfabetycznie.
 
 \begin{description}
-	\item[Antyterrorysta]
-	\item[Antyterrorysta lider]
-	\item[Interfejs]
-	\item[Jednostka]
-	\item[Konfiguracja]
-	\item[Punkt kluczowy]
-	\item[Punkt startowy / końcowy]
-	\item[Statystyki]
-	\item[Symulacja]
-	\item[Terrorysta]
+	\item[Antyterrorysta] jest to jednostka, która w grze symulacyjnej oznaczona jest kolorem niebieskim. Celem antyterrorysty jest eliminacja wszystkich terrorystów
+	\item[Antyterrorysta lider] jest to antyterrorysta, który prowadzi oddział antyterrorystyczny. Reszta antyterrorystów podąża za liderem
+	\item[Interfejs] jest to część aplikacji, która służy do przygotowania konfiguracji, sterowania symulacją, prezentacją logów oraz statystyk jednostek
+	\item[Jednostka] jest to obiekt mogący się poruszać oraz wykazujący pewne działanie taktyczne. W grze symulacyjnej jednostkami są terroryści i antyterroryści
+	\item[Konfiguracja] są to dane o położeniu ścian, punktu startowego / końcowego antyterrorystów oraz punktów kluczowych. Konfiguracja może być zapisana, wczytana lub usunięta z poziomu interfejsu
+	\item[Punkt kluczowy] jest to punkt należący do uporządkowanego zbioru, na podstawie którego budowane są ścieżki dla antyterrorystów. Wokół punktów kluczowych tworzeni są terroryśli na początku rozgrywki
+	\item[Punkt startowy / końcowy] jest to punkt, w którym są tworzeni i do którego wracają antyterroryści po przejściu przez wszystkie punkty kluczowe
+	\item[Statystyki] jest to część interfejsu ukazująca mapę lokacji oraz jednostki (podczas symulacji)
+	\item[Statystyki] jest to część interfejsu ukazująca aktualny stan punktów życia oraz ilość zabić dla poszczególnych jednostek.
+	\item[Symulacja] jest to stan gry, w którym na scenie znajdują się jakiekolwiek jednostki	
+	\item[Terrorysta] jest to jednostka, która w grze symulacyjnej oznaczona jest kolorem czerwonym. Celem terrorysty jest obrona przed antyterrorystami
 \end{description}
 
 
