@@ -2,6 +2,7 @@ GameControl = {
 
     storagePrefix: 'sss_map_',
     simStartTime: null,
+    winMessage: null,
 
     init: function(){
         var cfs = this.configs();
@@ -12,10 +13,18 @@ GameControl = {
         Game.createEntitiesList = GameControl.createEntitiesList;
         Game.clearEntitiesList = GameControl.clearEntitiesList;
         Game.updateStat = GameControl.updateStat;
+        Game.setWinMessage = GameControl.setWinMessage;
     },
-    log: function(text) {
+    log: function(text, color) {
+        color = color || 'black';
         var time = ((Date.now() - GameControl.simStartTime)/1000).toFixed(1);
-        $('#logs tbody').prepend('<tr><td>'+text+'</td><td>'+time+'s</td></tr>');
+        $('#logs tbody').prepend('<tr><td style="color:'+color+'">'+text+'</td><td  style="color:'+color+'">'+time+'s</td></tr>');
+    },
+    setWinMessage: function(text) {
+        clearTimeout(GameControl.winMessage);
+        setTimeout(function(){
+            GameControl.log(text, 'blue');
+        }, 2000);
     },
     configs: function() {
         result = {};

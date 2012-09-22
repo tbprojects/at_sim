@@ -287,6 +287,7 @@ Game.Entity = Kinetic.Image.extend(
     _reactOnDamage: function(shooter){},
     _logDeath: function(){
         Game.log(this.getName()+' #'+this.groupIndex+' killed');
+        Game.checkAliveEntities();
     },
     _updateCollisionRay: function(){
         var rayVector = this.getVecVelocity().toUnitVector().multiply(this.lookAhead);

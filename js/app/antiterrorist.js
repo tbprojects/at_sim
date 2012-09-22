@@ -109,6 +109,7 @@ Game.Antiterrorist = Game.Entity.extend({
         this.changeState('follow entity')
     },
     _reactOnDamage: function(shooter){
+        this.reactionTime = 0;
         this.checkDirectionTime = this.checkDirectionTimeMax;
         this.calculatePath(shooter.getX(), shooter.getY());
         this.changeState('check direction');

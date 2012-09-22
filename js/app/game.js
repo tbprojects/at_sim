@@ -48,6 +48,23 @@ Game = {
     getEntities: function(){
         return this.entities.getChildren();
     },
+    getAliveTerrorists: function(){
+        return $.map(Game.entities.get('.terrorist'), function(object, index){if (object.isAlive) return object})
+    },
+    getAliveAntiterrorists: function(){
+        return $.map(Game.entities.get('.antiterrorist'), function(object, index){if (object.isAlive) return object})
+    },
+    checkAliveEntities: function(){
+        var ter_count = Game.getAliveTerrorists().length;
+        var ats_count = Game.getAliveAntiterrorists().length;
+        if (ter_count == 0 && ats_count == 0) {
+            this.setWinMessage('DRAW!');
+        } else if (ter_count == 0) {
+            this.setWinMessage('ANTITERRORISTS WON!');
+        } else if (ats_count == 0) {
+            this.setWinMessage('TERRORISTS WON!');
+        }
+    },
     getNodeByPosition: function(x, y){
         x = Math.round(x/Game.mapDensity);
         y = Math.round(y/Game.mapDensity);
@@ -71,7 +88,7 @@ Game = {
         this._spawnTerrorists();
         this._spawnAntiterrorists();
         Game.createEntitiesList();
-        Game.log('Simulation started');
+        Game.log('SIMULATION STARTED', 'blue');
         Game.paused = false;
 	},
 	endGame: function(){
