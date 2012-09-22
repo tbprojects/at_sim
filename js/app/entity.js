@@ -147,22 +147,13 @@ Game.Entity = Kinetic.Image.extend(
         var distance = this.getVecPosition().distanceFrom($V([this.tarX, this.tarY]));
         return distance < this.arrivePrecision;
     },
-    avoid: function(){
+    avoid: function(collisionPoint, wall){},
+    checkForCollision: function(){
         for (var i in Game.map.walls) {
             var wall = Game.map.walls[i];
             var collisionPoint = this.rayLine.getVecIntersectionPoint(wall);
             if (collisionPoint) {
-                var norm;
-                var n0 = this.getVecPosition().distanceFrom(collisionPoint.add(wall.getNormals()[0]));
-                var n1 = this.getVecPosition().distanceFrom(collisionPoint.add(wall.getNormals()[1]));
-                if (n0 < n1) {
-                    norm = wall.getNormals()[0];
-                } else {
-                    norm = wall.getNormals()[1];
-                }
-                var target = collisionPoint.add(norm.multiply(this.avoidDistance));
-                this.setTarget(target.e(1), target.e(2));
-                this.seek();
+                this.avoid(collisionPoint, wall);
                 return true;
             }
         }
@@ -283,6 +274,12 @@ Game.Entity = Kinetic.Image.extend(
             this.checkDirectionTime -= 1;
             this.seek();
         }
+    },
+    setCheckDirection: function(entity){
+        this.maxSpeed = this.MOVING;
+        this.checkDirectionTime = this.checkDirectionTimeMax;
+        this.calculatePath(entity.getX(), entity.getY());
+        this.changeState('check direction');
     },
     _reactOnDamage: function(shooter){},
     _logDeath: function(){

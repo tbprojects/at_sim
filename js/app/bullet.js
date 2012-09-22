@@ -8,6 +8,7 @@ Game.Bullet = Game.Entity.extend({
     energy: 50,
     bulletRange: 1000,
     dieAlpha: 0,
+    attentionRange: 150,
 
     defaultConfig: {
         width: 4,
@@ -24,6 +25,7 @@ Game.Bullet = Game.Entity.extend({
            this.setPosition(this.shooter.getX(),this.shooter.getY());
            var target = this.getVecPosition().add(this.shooter.getVecVelocity().multiply(this.bulletRange));
            this.setTarget(target.e(1), target.e(2));
+           this._drawTerroristsAttention();
            return this;
    	},
     think: function(){
@@ -46,9 +48,21 @@ Game.Bullet = Game.Entity.extend({
                    entityHit.getName() != this.getName('bullet')) {
             this.die();
             entityHit.takeDamage(this.energy, this.shooter);
+            this._drawTerroristsAttention();
         }
         this.energy -= 0.5;
         this.seek();
+    },
+    _drawTerroristsAttention: function(){
+        var ters = Game.getAliveTerrorists();
+        for (var i in ters){
+            var ter = ters[i];
+            if (['stand', 'wander'].indexOf(ter.currentState) == -1) continue;
+            var distance = this.getVecPosition().distanceFrom(ter.getVecPosition());
+            if (distance < this.attentionRange){
+                ter.setCheckDirection(this);
+            }
+        }
     },
     _logDeath: function(){}
 });

@@ -8,7 +8,7 @@ Game.Terrorist = Game.Entity.extend({
     collisionRadius: 8,
     healthPoints: 100,
     healthPointsMax: 100,
-    reactionTimeMax:55,
+    reactionTimeMax:25,
     reactionTime: -1,
     shootInterval: 15,
     shootTime: -1,
@@ -47,7 +47,7 @@ Game.Terrorist = Game.Entity.extend({
             default: this.changeToDefaultState(); break;
         }
         if (this.avoiding) this.wanderOrientation = this.getRotation();
-        this.avoiding = this.avoid();
+        this.avoiding = this.checkForCollision();
     },
     setup: function(){
         this.changeState('wander');
@@ -66,6 +66,19 @@ Game.Terrorist = Game.Entity.extend({
         this.setTarget(target.e(1),target.e(2));
         this.seek();
     },
+    avoid:function(collisionPoint, wall){
+        var norm;
+        var n0 = this.getVecPosition().distanceFrom(collisionPoint.add(wall.getNormals()[0]));
+        var n1 = this.getVecPosition().distanceFrom(collisionPoint.add(wall.getNormals()[1]));
+        if (n0 < n1) {
+            norm = wall.getNormals()[0];
+        } else {
+            norm = wall.getNormals()[1];
+        }
+        var target = collisionPoint.add(norm.multiply(this.avoidDistance));
+        this.setTarget(target.e(1), target.e(2));
+        this.seek();
+    },
     changeToDefaultState: function(){
         this.changeState('wander');
     },
@@ -79,9 +92,6 @@ Game.Terrorist = Game.Entity.extend({
         return false;
     },
     _reactOnDamage: function(shooter){
-        this.maxSpeed = this.MOVING;
-        this.checkDirectionTime = this.checkDirectionTimeMax;
-        this.calculatePath(shooter.getX(), shooter.getY());
-        this.changeState('check direction');
+        this.setCheckDirection(shooter);
     }
 });
