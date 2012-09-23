@@ -1,6 +1,6 @@
 \chapter{Założenia projektu}
 \section{Wymagania funkcjonalne}
-Realizacja projektu opierała się w całości o stosowanie tzw. technik zwinnych\footnote{Agile development - punktem wyjścia do tego podejścia jest Manifest Zwinnego Tworzenia Oprogramowania z 2001 roku http://agilemanifesto.org/iso/pl/}. Proces tworzenia gry symulacyjnej został podzielony na etapy. Przed implementacją każdego etapu był przygotowywany zestaw scenariuszy opisujący funkcjonalności, jakie powinny zostać zaimplementowane w danym etapie. Natomiast po implementacji każdego z etapów gra symulacyjna była udostępniania kilku testerom, którzy w ramach informacji zwrotnej wskazywali, jakie funkcjonalności lub zachowania jednostek chcieliby zaobserwować w grze. Przy czytaniu scenariuszy przydatna jest znajomość słownika pojęć projektu (rozdział \ref{dictonary}).
+Realizacja projektu opierała się w całości o stosowanie tzw. technik zwinnych\footnote{Agile development - punktem wyjścia do tego podejścia jest Manifest Zwinnego Tworzenia Oprogramowania z 2001 roku http://agilemanifesto.org/iso/pl/}. Proces tworzenia gry symulacyjnej został podzielony na etapy. Przed implementacją każdego etapu przygotowywany był zestaw scenariuszy opisujący funkcjonalności, jakie powinny zostać zaimplementowane w danym etapie. Natomiast po implementacji każdego z etapów gra symulacyjna była udostępniania kilku testerom, którzy w ramach informacji zwrotnej wskazywali, jakie funkcjonalności lub zachowania jednostek chcieliby zaobserwować w grze. Przy czytaniu scenariuszy przydatna jest znajomość słownika pojęć projektu (rozdział \ref{dictonary}).
 
 Pierwszy etap implementacji projektu zakładał zbudowanie architektury kodu aplikacji - utworzenie podstawowych klas, metod odpowiedzialnych za zarządzanie obiektami na scenie oraz metody wyznaczania bezkolizyjnej ścieżki do zadanego punktu. Dodatkowo jednostki miały mieć możliwość poruszania się do określonego punktu docelowego. Szczegóły zostały przedstawione w tabeli \ref{scenarios1}.
 
@@ -12,10 +12,10 @@ Etap 1 - Setup aplikacji\\\hline
 	\begin{itemize}
 		\setlength\itemsep{0pt}
 		\item aplikacja może tworzyć obiekty i renderować je na scenie
-		\item aplikacja może tworzyć terrorystów (obiekty dynamiczne)
-		\item aplikacja może tworzyć antyterrorystów (obiekty dynamiczne)
+		\item aplikacja może tworzyć terrorystów (obiekty ruchome)
+		\item aplikacja może tworzyć antyterrorystów (obiekty ruchome)
 		\item aplikacja może tworzyć ściany (obiekty statyczne)
-		\item aplikacja może wyliczać ścieżki dla obiektów dynamicznych
+		\item aplikacja może wyliczać ścieżki dla obiektów ruchomych
 		\item jednostki mogą się poruszać do zadanego punktu	
 	\end{itemize}
 \\\hline
@@ -24,7 +24,7 @@ Etap 1 - Setup aplikacji\\\hline
 \end{center}
 \end{table} 
 
-Podczas drugiego etapu miały zostać zaimplementowane kluczowe elementy interfejsu użytkownika. Miał on pozwalać na skonfigurowanie symulacji poprzez zbudowanie mapy, określenie punktów kluczowych oraz zdefiniowanie liczby uczestniczących jednostek. Ponadto do należało przygotować odpowiednie kontrolki, które sterują symulacją. Szczegóły zostały przedstawione w tabeli \ref{scenarios2}. 
+Podczas drugiego etapu miały zostać zaimplementowane kluczowe elementy interfejsu użytkownika. Miał on pozwalać na skonfigurowanie symulacji poprzez zbudowanie ścian, określenie punktów kluczowych oraz zdefiniowanie liczby uczestniczących jednostek. Ponadto do należało przygotować odpowiednie kontrolki, które sterują symulacją. Szczegóły zostały przedstawione w tabeli \ref{scenarios2}. 
 
 \begin{table}
 \begin{center}
@@ -33,9 +33,9 @@ Podczas drugiego etapu miały zostać zaimplementowane kluczowe elementy interfe
 ETAP 2 - Interfejs\\\hline
 	\begin{itemize}
 		\setlength\itemsep{0pt}
-		\item interfejs pozwala na definiowanie ścian (dodawanie, usuwanie ostatniej, usuwanie wszystkich)
-		\item interfejs pozwala na punktu startowego / końcowego antyterrorystów (dodawanie, usuwanie)
-		\item interfejs pozwala na definiowanie punktów kluczowych (dodawanie, usuwanie ostatniego, usuwanie wszystkich)
+		\item interfejs pozwala na definiowanie ścian (dodawanie nowej, usuwanie ostatniej, usuwanie wszystkich)
+		\item interfejs pozwala na definiowanie punktu startowego / końcowego antyterrorystów (dodawanie, usuwanie)
+		\item interfejs pozwala na definiowanie punktów kluczowych (dodawanie nowego, usuwanie ostatniego, usuwanie wszystkich)
 		\item interfejs pozwala na definiowanie liczby antyterrorystów oraz liczby terrorystów
 		\item interfejs pozwala na rozpoczęcie symulacji
 		\item interfejs pozwala na zakończenie symulacji
@@ -53,7 +53,7 @@ Implementacja trzeciego etapu zakładała wdrożenie podstawowych elementów tak
 \begin{center}
 \begin{tabular}{|p{1.0\textwidth}|}
 \hline
-ETAP 2 - Poruszanie się\\\hline
+ETAP 3 - Poruszanie się\\\hline
 	\begin{itemize}
 		\setlength\itemsep{0pt}
 		\item interfejs może wyświetlać logi dotyczące aktualnej symulacji
@@ -111,7 +111,7 @@ ETAP 5 - Pożądane funkcjonalności\\\hline
 \end{center}
 \end{table} 
 
-Prócz scenariuszy, użytecznym elementem specyfikacji był szkic interfejsu użytkownika (rysunek \ref{wireframe}). Podczas implementacji nanoszone były na niego nieznaczne zmiany.
+Prócz scenariuszy, użytecznym elementem specyfikacji był szkic interfejsu użytkownika. Podczas implementacji nanoszone były na niego nieznaczne zmiany. Ostateczna wersja szkicu jest zaprezentowana na rysunku \ref{wireframe}.
 
 \begin{figure}
 \begin{center}
@@ -121,7 +121,7 @@ Prócz scenariuszy, użytecznym elementem specyfikacji był szkic interfejsu uż
 \end{figure}
 
 \section{Wymagania niefunkcjonalne}
-Zestaw wymagań niefunkcjonalnych dla gry symulacyjnej, będącej przedmiotem tej pracy dyplomowej, została przedstawione w tabeli \ref{nonFunc}
+Zestaw wymagań niefunkcjonalnych dla gry symulacyjnej, będącej przedmiotem tej pracy dyplomowej, został przedstawiony w tabeli \ref{nonFunc}. Po zaimplementowaniu aplikacji, została pozytywnie zweryfikwana zgodność z przywołanymi przeglądarkami\footnote{do weryfikacji została użyta usługa http://www.browserstack.com/}.
 
 \begin{table}
 \begin{center}
@@ -150,15 +150,18 @@ Podczas sporządzania specyfikacji gry symulacyjnej, która jest przedmiotem tej
 \begin{description}
 	\item[Antyterrorysta] jest to jednostka, która w grze symulacyjnej oznaczona jest kolorem niebieskim. Celem antyterrorysty jest eliminacja wszystkich terrorystów
 	\item[Antyterrorysta lider] jest to antyterrorysta, który prowadzi oddział antyterrorystyczny. Reszta antyterrorystów podąża za liderem
-	\item[Interfejs] jest to część aplikacji, która służy do przygotowania konfiguracji, sterowania symulacją, prezentacją logów oraz statystyk jednostek
-	\item[Jednostka] jest to obiekt mogący się poruszać oraz wykazujący pewne działanie taktyczne. W grze symulacyjnej jednostkami są terroryści i antyterroryści
+	\item[Interfejs] jest to część aplikacji, która służy do przygotowania konfiguracji, sterowania symulacją oraz prezentacji logów i statystyk jednostek
+	\item[Jednostka] jest to obiekt ruchomy, wykazujący pewne działanie taktyczne. W grze symulacyjnej jednostkami są terroryści i antyterroryści
 	\item[Konfiguracja] są to dane o położeniu ścian, punktu startowego / końcowego antyterrorystów oraz punktów kluczowych. Konfiguracja może być zapisana, wczytana lub usunięta z poziomu interfejsu
-	\item[Punkt kluczowy] jest to punkt należący do uporządkowanego zbioru, na podstawie którego budowane są ścieżki dla antyterrorystów. Wokół punktów kluczowych tworzeni są terroryśli na początku rozgrywki
+	\item[Obiekt ruchomy] jest nim każda jednostka oraz każdy pocisk
+	\item[Punkt kluczowy] jest to punkt należący do uporządkowanego zbioru, na podstawie którego budowane są ścieżki dla antyterrorystów. Wokół punktów kluczowych tworzeni są terroryści na początku rozgrywki
 	\item[Punkt startowy / końcowy] jest to punkt, w którym są tworzeni i do którego wracają antyterroryści po przejściu przez wszystkie punkty kluczowe
-	\item[Statystyki] jest to część interfejsu ukazująca mapę lokacji oraz jednostki (podczas symulacji)
+	\item[Scena] jest to część interfejsu ukazująca mapę lokacji oraz ruchome obiekty
 	\item[Statystyki] jest to część interfejsu ukazująca aktualny stan punktów życia oraz ilość zabić dla poszczególnych jednostek.
 	\item[Symulacja] jest to stan gry, w którym na scenie znajdują się jakiekolwiek jednostki	
-	\item[Terrorysta] jest to jednostka, która w grze symulacyjnej oznaczona jest kolorem czerwonym. Celem terrorysty jest obrona przed antyterrorystami
+	\item[Terrorysta] jest to jednostka, która w grze symulacyjnej oznaczona jest kolorem czerwonym. Celem terrorysty jest obrona terytorium przed antyterrorystami
+	\item[Warstwa sceny] jest to część sceny, do której aplikacja może przypisać obiekty w~celu późniejszego renderowania.
+	\item[Zamknięcie konfliktu] jest to sytuacja, w której nie żyją wszyscy antyterroryści lub nie żyją wszyscy terroryści.
 \end{description}
 
 
