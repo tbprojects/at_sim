@@ -387,9 +387,9 @@ Poza wymienionymi klasami, w grze symulacyjnej zdefiniowane są jeszcze klasy, k
 \end{itemize}
 
 \section{Sztuczna inteligencja - taktyki}
-W grze symulacujnej, będącej przedmiotem niniejszej pracy dyplomowej, terroryści oraz antyterroryści posiadają sztuczną inteligencję\footnote{charakterystyka modelu SI została przedstawiona w rozdziale \ref{aiModelInfo}}, która pozwala im na podejmowanie decyzji oraz poruszanie się. Interfejsem, z którego jednostki uczestniczące w symulacji czerpią wiedzę o świecie gry, jest obiekt Game. 
+W grze symulacyjnej, będącej przedmiotem niniejszej pracy dyplomowej, terroryści oraz antyterroryści posiadają sztuczną inteligencję\footnote{charakterystyka modelu SI została przedstawiona w rozdziale \ref{aiModelInfo}}, która pozwala im na podejmowanie decyzji oraz poruszanie się. Interfejsem, z którego jednostki uczestniczące w symulacji czerpią wiedzę o świecie gry, jest obiekt Game. 
 
-Terroryści nie posiadają grupowej strategii działania, kierują się wyłącznie indywidualnie podejmowanymi decyzjami. Natomiast antyterroryści posiadaja strategię, która nakazuje im posiadanie lidera przez cały czas trwania symulacji. Lider antyterrorystów jest jednostką, za którą w szyku poruszają się pozostali antyterroryści. Jeżeli lider zginie, to natychmiastowo wybierany jest nowy lider, a działania grupy są kontynuowane.
+Terroryści nie posiadają grupowej strategii działania, kierują się wyłącznie indywidualnie podejmowanymi decyzjami. Natomiast antyterroryści posiadają strategię, która nakazuje im posiadanie lidera przez cały czas trwania symulacji. Lider antyterrorystów jest jednostką, za którą w szyku poruszają się pozostali antyterroryści. Jeżeli lider zginie, to natychmiastowo wybierany jest nowy lider, a działania grupy są kontynuowane.
   
 Antyterrorysta posiada skończony zbiór stanów (rysunek \ref{atTacticImage}), które odzwierciedlają podjęte przez niego decyzje i definiują jego działania. Po zainicjalizowaniu obiektu antyterrorysty przechodzi on do stanu \emph{follow entity}, który pozwala mu podążać za swoimi poprzednikami. Jest to domyślny stan, do którego antyterrorysta może wrócić ze stanów, do których przeszedł na podstawie zdarzenia. Jeżeli antyterrorysta jest liderem, to następuje natychmiastowe przejście do stanu \emph{follow path}, które definiuje konieczność poruszania się po wyznaczonej ścieżce do następnego punktu kluczowego. Wraz z dotarciem do danego punktu kluczowego, wyznaczana jest ścieżka do następnego punktu kluczowego. Jeżeli antyterrorysta lider dotarł do ostatniego punktu kluczowego, to zmienia on swój stan na \emph{follow extraction}, który nakazuje jednostce poruszanie się po ścieżce do punktu startowego / końcowego antyterrorystów. Po dotarciu do tego punktu antyterrorysta zatrzymuje się i przechodzi do stanu bezczynności - \emph{idle}.
 
@@ -413,7 +413,7 @@ Terrorysta również posiada skończony zbiór stanów (rysunek \ref{terTacticIm
 
 Każdy terrorysta także może zmienić swój stan na podstawie zaistniałego zdarzenia. Postrzelenie terrorysty lub usłyszenie przez niego odgłosu wystrzału skutkuje wywołaniem stanu \emph{check direction}, który definiuje identyczne zachowanie i warunek wyjścia ze stanu, jak w przypadku antyterrorysty. Podobnie jest ze zdarzeniem polegającym na zauważeniu przeciwnika. Wywołuje ono stan \emph{attack}, który nakazuje terroryście strzelać do wrogiej jednostki. Warunek wyjścia z tego stanu jest taki sam, jak u antyterrorysty.
 
-Zdarzeniem wspólnym dla antyterrorystów oraz dla terrorystów jest otrzymanie śmiertelnego trafienia. W tym przypadku natychmiastowo zmieniany jest stan jednostki na bezczynność - \emph{idle}. Jednostka pozostająca w stanie bezczynnośći nie reaguje na zdarzenia, co skutkuje brakiem możliwości zmiany swego stanu.
+Zdarzeniem wspólnym dla antyterrorystów oraz dla terrorystów jest otrzymanie śmiertelnego trafienia. W tym przypadku natychmiastowo zmieniany jest stan jednostki na bezczynność - \emph{idle}. Jednostka pozostająca w stanie bezczynności nie reaguje na zdarzenia, co skutkuje brakiem możliwości zmiany swego stanu.
 
 \section{Opis algorytmów}
 W tym rozdziale zostaną przedstawione wybrane algorytmy, jakie są wykorzystywane w grze symulacyjnej, będącej przedmiotem tej pracy dyplomowej. Słowny opis jest uzupełniony pseudokodami lub implementacją w języku Javascript.
@@ -473,7 +473,7 @@ Gdy cel jest już zdefiniowany, to wykonywane są algorytmy niższego poziomu, o
 \subsection{Wyznaczanie ścieżki - A*}
 Wyznaczanie ścieżek bezkolizyjnych (uwzględniających położenie ścian na mapie) jest realizowane poprzez algorytm A*, który na bazie grafu jest w stanie odnaleźć drogę między dwoma zadanymi węzłami. W grze symulacyjnej graf zawiera węzły, które mogą mieć przypisany jeden z dwóch stanów: otwarty lub zamknięty. Wyliczona ścieżka nigdy nie prowadzi przez węzły zamknięte.
 
-Algorytm został opisany przez Petera Harta, Nilsa Nilssona oraz Bertrama Raphaela w 1968 roku i początkowo nosił nazwę \emph{A}. Jednkaże ze względu na zastosowanie heurystyki, polegającej na przeszukiwaniu grafu z pierwszeństem analizy węzłów obiecujących (tj. tych, które znajdują się bliżej węzła docelowego), nadano algorytmowi nazwę \emph{A*}.
+Algorytm został opisany przez Petera Harta, Nilsa Nilssona oraz Bertrama Raphaela w 1968 roku i początkowo nosił nazwę \emph{A}. Jednakże ze względu na zastosowanie heurystyki, polegającej na przeszukiwaniu grafu z pierwszeństwem analizy węzłów obiecujących (tj. tych, które znajdują się bliżej węzła docelowego), nadano algorytmowi nazwę \emph{A*}.
 
 W grze symulacyjnej wykorzystywana jest javascript'owa implementacja algorytmu A*, przygotowana przez Briana Grinsteada w formie biblioteki javascript-astar\cite{astarPage}. Inicjalizacja grafu oraz przykład wyszukiwania ścieżki zostały przedstawione w listingu \ref{astarCode}. W definicji grafu \emph{1} oznacza węzeł otwarty, a \emph{0} węzeł zamknięty. Podczas definiowania przez użytkownika konfiguracji symulacji, w miejscu gdzie jest postawiona ściana węzły grafu zmieniają swój typ na zamknięty. Wynikiem wykonania wyszukiwania jest uporządkowana lista węzłów, jakie jednostka musi odwiedzić w drodze do celu. Algorytm wyznaczania scieżki jest zaimplementowany w metodzie \emph{calculatePath} klasy Game.Entity.
 
@@ -505,7 +505,7 @@ W grze symulacyjnej wykorzystywana jest javascript'owa implementacja algorytmu A
 \end{center}
 \end{figure}
 
-Algorytm zauważania przeciwnika jest zaimplementowany w metodzie \emph{closestSeenOpponent} klasy Game.Entity. Zwraca on referencję do najbliższego przeciwnika, będącego w zasięgu wzroku. Algorym iteruje po liście przeciwników, dokonując szeregu sprawdzeń tylko dla tych jednostek, które jeszcze żyją. Tzw. \emph{dłuższy dystans} obliczany jest między pozycją obserwującej jednostki a pozycją potencjalnego przeciwnika. \emph{Krótszy dystans} obliczany jest między końcem linii sprawdzającej ew. kolizje dla jednostki obserwującej a pozycją potencjalnego przeciwnika (rysunek \ref{detectionImage}). Jeżeli \emph{krótszy dystans} jest rzeczywiście mniejszy od \emph{dłuższego dystansu}, to oznacza to, że przeciwnik jest przed jednostką obserwującą\footnote{jednostki będące za plecami jednostki obserwującej są ignorowane}. Jeżeli dystans pomiędzy jednostkami jest większy od zasięgu wzroku lub jest wiekszy niż zapamiętany dystans do aktualnego celu, to taki przeciwnik jest ignorowany. Jeżeli jednak odległości są mniejsze, a przeciwnik nie znajduje się za jakąkolwiek ścianą, to oznaczamy go za cel i zapamiętujemy nowy, aktualny dystans do celu. Pseudokod algorytmu jest zapisany w listingu \ref{detectionCode}.
+Algorytm zauważania przeciwnika jest zaimplementowany w metodzie \emph{closestSeenOpponent} klasy Game.Entity. Zwraca on referencję do najbliższego przeciwnika, będącego w zasięgu wzroku. Algorytm iteruje po liście przeciwników, dokonując szeregu sprawdzeń tylko dla tych jednostek, które jeszcze żyją. Tzw. \emph{dłuższy dystans} obliczany jest między pozycją obserwującej jednostki a pozycją potencjalnego przeciwnika. \emph{Krótszy dystans} obliczany jest między końcem linii sprawdzającej ew. kolizje dla jednostki obserwującej a pozycją potencjalnego przeciwnika (rysunek \ref{detectionImage}). Jeżeli \emph{krótszy dystans} jest rzeczywiście mniejszy od \emph{dłuższego dystansu}, to oznacza to, że przeciwnik jest przed jednostką obserwującą\footnote{jednostki będące za plecami jednostki obserwującej są ignorowane}. Jeżeli dystans pomiędzy jednostkami jest większy od zasięgu wzroku lub jest większy niż zapamiętany dystans do aktualnego celu, to taki przeciwnik jest ignorowany. Jeżeli jednak odległości są mniejsze, a przeciwnik nie znajduje się za jakąkolwiek ścianą, to oznaczamy go za cel i zapamiętujemy nowy, aktualny dystans do celu. Pseudokod algorytmu jest zapisany w listingu \ref{detectionCode}.
 
 \begin{table}
 \begin{center}
@@ -536,7 +536,7 @@ Algorytm zauważania przeciwnika jest zaimplementowany w metodzie \emph{closestS
 \end{center}
 \end{figure}
 
-Antyterroryści w grze symulacyjnej poruszają się w szyku liniowym (rysunek \ref{followEntityImage}). Taka kolumna zaatakowana bezpośrednio od przodu lub od tyłu ma najmniejszą siłę ogniową. Linia zaatakowana od boku posiada bardzo dużą siłę ogniową, bowiem antyterroryści nie zasłaniają sobie na wzajem celu. Algorytm podążania w linii jest zaimplementowany w metodzie \emph{followEntity} klasy Game.Antiterrorist. Próbuje on dla danej jednostki znaleźć przyjazną jednostkę, która ją poprzedza i nie zginęła. Jeżeli taka jednostka nie zostanie znaleziona, to oznacza to, że dana jednostka jest liderem i należy zmienić jej stan na \emph{follow path}. W przeciwnym wypadku dana jednostka wylicza i podąża do współrzędnych celu, które są ilocznynem odległości podążania oraz różnicy aktualnej pozycji znalezionego sprzymierzeńca i jego wektora prędkości. Pseudokod algorytmu jest zapisany w listingu \ref{followEntityCode}.
+Antyterroryści w grze symulacyjnej poruszają się w szyku liniowym (rysunek \ref{followEntityImage}). Taka kolumna zaatakowana bezpośrednio od przodu lub od tyłu ma najmniejszą siłę ogniową. Linia zaatakowana od boku posiada bardzo dużą siłę ogniową, bowiem antyterroryści nie zasłaniają sobie na wzajem celu. Algorytm podążania w linii jest zaimplementowany w metodzie \emph{followEntity} klasy Game.Antiterrorist. Próbuje on dla danej jednostki znaleźć przyjazną jednostkę, która ją poprzedza i nie zginęła. Jeżeli taka jednostka nie zostanie znaleziona, to oznacza to, że dana jednostka jest liderem i należy zmienić jej stan na \emph{follow path}. W przeciwnym wypadku dana jednostka wylicza i podąża do współrzędnych celu, które są iloczynem odległości podążania oraz różnicy aktualnej pozycji znalezionego sprzymierzeńca i jego wektora prędkości. Pseudokod algorytmu jest zapisany w listingu \ref{followEntityCode}.
 
 \begin{table}
 \begin{center}
@@ -561,7 +561,7 @@ Antyterroryści w grze symulacyjnej poruszają się w szyku liniowym (rysunek \r
 \end{table}
 
 \subsection{Atakowanie jednostki}
-Atak na wrogą jednostkę jest poprzedzany obserwacją, która przeprowadzana jest niezależnie od stanu, w jakim znajduje się aktualnie jednostka. Z tego algorytmu korzystają zarówno antyterroryści, jak i terroryści. Jest on zaimplementowany w metodzie \emph{watchForEnemy} klasy Game.Entity. Na początku metoda korzysta z algorytmu zauważania przeciwnika (rozdział \ref{detectionSubsection}). Jeżeli dana jednostka nie widzi w danym momencie potencjalnego przeciwnika, a obecnie znajduje się w stanie \emph{attack}, to następuje przejście do stanu domyślnego tej jednostki. Jednak gdy przeciwnik został znaleziony, ale nie był wcześniej obserwowany, to dana jednostka rozpoczyna jego obserwację ustawiając czas do ataku na zdefiniowany w parametrach czas reakcji. Gdy jednak znaleziony przeciwnik jest już obserwowany i upłynie czas do ataku, to dana jednostka przechodzi do stanu \emph{attack}, jeżeli tylko nie ma przed sobą żadnych sprzymierzeńców stojących na lini ognia. Pseudokod algorytmu jest zapisany w listingu \ref{watchForEnemyCode}.
+Atak na wrogą jednostkę jest poprzedzany obserwacją, która przeprowadzana jest niezależnie od stanu, w jakim znajduje się aktualnie jednostka. Z tego algorytmu korzystają zarówno antyterroryści, jak i terroryści. Jest on zaimplementowany w metodzie \emph{watchForEnemy} klasy Game.Entity. Na początku metoda korzysta z algorytmu zauważania przeciwnika (rozdział \ref{detectionSubsection}). Jeżeli dana jednostka nie widzi w danym momencie potencjalnego przeciwnika, a obecnie znajduje się w stanie \emph{attack}, to następuje przejście do stanu domyślnego tej jednostki. Jednak gdy przeciwnik został znaleziony, ale nie był wcześniej obserwowany, to dana jednostka rozpoczyna jego obserwację ustawiając czas do ataku na zdefiniowany w parametrach czas reakcji. Gdy jednak znaleziony przeciwnik jest już obserwowany i upłynie czas do ataku, to dana jednostka przechodzi do stanu \emph{attack}, jeżeli tylko nie ma przed sobą żadnych sprzymierzeńców stojących na linii ognia. Pseudokod algorytmu jest zapisany w listingu \ref{watchForEnemyCode}.
 
 \begin{table}
 \begin{center}
@@ -606,3 +606,22 @@ Realizacja ataku polega na wystrzeliwaniu pocisku co określony interwał czasow
 \end{table}
 
 \section{Parametryzacja}
+
+Antyterroryści i terroryści w grze symulacyjnej współdzielą część metod oraz parametrów, które dziedziczą z klasy Game.Entity. Jednakże część parametrów wpływających na przebieg symulacji ma u nich różne wartości. Stroną faworyzowaną są tutaj antyterroryści, u których zakłada się, że są lepiej wyposażeni (np. większa szybkostrzelność broni, kamizelki kuloodporne) oraz są lepiej wyszkoleni (np. szybciej potrafią zareagować na pojawienie się przeciwnika). Dzięki takiej parametryzacji mniej liczebny odział antyterrorystów ma wyrównane szanse walki z liczniejszymi terrorystami. Tabela \ref{parameters} przedstawia porównanie wartości wybranych parametrów jednostek.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|p{0.5\textwidth} | p{0.2\textwidth} p{0.2\textwidth}|}
+\hline
+Parametr & Antyterrorysta & Terrorysta\\\hline
+	healthPoints (punkty życia) & 150 & 100\\\hline
+	reactionTimeMax (czas reakcji) & 20 & 25\\\hline
+	shootInterval (czas między strzałami) & 10 & 15\\\hline
+	checkDirectionTimeMax (czas na sprawdzenie kierunku) & 100 & 1000\\\hline
+	maxSpeed (maksymalna prędkość) & 0.025 & 0.020\\
+\hline
+\end{tabular}
+\caption {Porównanie parametrów antyterrorysty i terrorysty\label{parameters}}
+\end{center}
+\end{table} 
+
