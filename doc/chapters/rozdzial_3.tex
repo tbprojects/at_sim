@@ -418,12 +418,64 @@ Zdarzeniem wspólnym dla antyterrorystów oraz dla terrorystów jest otrzymanie 
 \section{Opis algorytmów}
 W tym rozdziale zostaną przedstawione wybrane algorytmy, jakie są wykorzystywane w grze symulacyjnej, będącej przedmiotem tej pracy dyplomowej. Słowny opis jest uzupełniony pseudokodami lub implementacją w języku Javascript.
 
+\subsection{Myślenie i poruszanie się jednostek}
+Antyterroryści i terroryści w grze symulacyjnej posiadają zaimplementowaną metodę \emph{think} pozwalającą na realizację działań zapisanych w konkretnych stanach (listing \ref{thinkAt} oraz \ref{thinkTer}). Prócz wywołania metod odpowiadającym konkretnym stanom, wywoływane są także metody \emph{watchForEnemy} oraz \emph{checkForCollision}. Ta pierwsza pozwala jednostce na obserwowanie otoczenia w poszukiwaniu przeciwników, natomiast druga na bezpieczne omijanie ścian. Metody odpowiadające za realizację poszczególnych stanów podejmują najczęściej decyzję, gdzie leży następny cel jednostki.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+    think: function(){
+        this.watchForEnemy();
+        switch(this.currentState) {
+            case 'idle': break;
+            case 'init': this.setup(); break;
+            case 'follow entity': this.followEntity(); break;
+            case 'follow path': this.followPath(); break;
+            case 'follow extraction': this.followExtraction(); break;
+            case 'check direction': this.checkDirection(); break;
+            case 'attack': this.attack(); break;
+            default: this.changeToDefaultState(); break;
+        }
+        if (this.avoiding) this.wanderOrientation = this.getRotation();
+        this.avoiding = this.checkForCollision();
+    }
+ \end{lstlisting}
+\caption {Metoda think w klasie Game.Antiterrorist}
+\label{thinkAt}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+    think: function(){
+        this.watchForEnemy();
+        switch(this.currentState) {
+            case 'idle': break;
+            case 'init': this.setup(); break;
+            case 'stand': this.stand(); break;
+            case 'wander': this.wander(); break;
+            case 'check direction': this.checkDirection(); break;
+            case 'attack': this.attack(); break;
+            default: this.changeToDefaultState(); break;
+        }
+        if (this.avoiding) this.wanderOrientation = this.getRotation();
+        this.avoiding = this.checkForCollision();
+    }
+ \end{lstlisting}
+\caption {Metoda think w klasie Game.Terrorist}
+\label{thinkTer}
+\end{center}
+\end{table}
+
+Gdy cel jest już zdefiniowany, to wykonywane są algorytmy niższego poziomu, odpowiedzialne za obliczenie wektora prędkości oraz prędkości, z jaką ma poruszać się jednostka. Takimi algorytmami są \emph{seek} (ruch w kierunku celu) oraz \emph{flee} (ruch w przeciwnym kierunku do celu). Następnie otrzymane dane są wykorzystywane przez funkcję \emph{update}, która przesuwa jednostkę na ekranie i nadaje jej odpowiednią orientację.
+
 \subsection{Wyznaczanie ścieżki - A*}
-Wyznaczanie ścieżek bezkolizyjnych (uwzględniających położenie ścian na mapie) jest realizowane porzez algorytm A*, który na bazie grafu jest w stanie odnaleźć drogę między dwoma zadanymi węzłami. W grze symulacyjnej graf zawiera węzły, które mogą mieć przypisany jeden z dwóch stanów: otwarty lub zamknięty. Wyliczona ścieżka nigdy nie prowadzi przez węzły zamknięte.
+Wyznaczanie ścieżek bezkolizyjnych (uwzględniających położenie ścian na mapie) jest realizowane poprzez algorytm A*, który na bazie grafu jest w stanie odnaleźć drogę między dwoma zadanymi węzłami. W grze symulacyjnej graf zawiera węzły, które mogą mieć przypisany jeden z dwóch stanów: otwarty lub zamknięty. Wyliczona ścieżka nigdy nie prowadzi przez węzły zamknięte.
 
 Algorytm został opisany przez Petera Harta, Nilsa Nilssona oraz Bertrama Raphaela w 1968 roku i początkowo nosił nazwę \emph{A}. Jednkaże ze względu na zastosowanie heurystyki, polegającej na przeszukiwaniu grafu z pierwszeństem analizy węzłów obiecujących (tj. tych, które znajdują się bliżej węzła docelowego), nadano algorytmowi nazwę \emph{A*}.
 
-W grze symulacyjnej wykorzystywana jest javascript'owa implementacja algorytmu A*, przygotowana przez Briana Grinsteada w formie biblioteki javascript-astar\cite{astarPage}. Inicjalizacja grafu oraz przykład wyszukiwania ścieżki został przedstawione w listingu \ref{astarCode}. W definicji grafu \emph{1} oznacza węzeł otwarty, a \emph{0} węzeł zamknięty. Podczas definiowania przez użytkownika konfiguracji symulacji, w miejscu gdzie jest postawiona ściana węzły grafu zmieniają swój typ na zamknięty. Wynikiem wykonania wyszukiwania jest uporządkowana lista węzłów, jakie jednostka musi odwiedzić w drodze do celu.
+W grze symulacyjnej wykorzystywana jest javascript'owa implementacja algorytmu A*, przygotowana przez Briana Grinsteada w formie biblioteki javascript-astar\cite{astarPage}. Inicjalizacja grafu oraz przykład wyszukiwania ścieżki zostały przedstawione w listingu \ref{astarCode}. W definicji grafu \emph{1} oznacza węzeł otwarty, a \emph{0} węzeł zamknięty. Podczas definiowania przez użytkownika konfiguracji symulacji, w miejscu gdzie jest postawiona ściana węzły grafu zmieniają swój typ na zamknięty. Wynikiem wykonania wyszukiwania jest uporządkowana lista węzłów, jakie jednostka musi odwiedzić w drodze do celu. Algorytm wyznaczania scieżki jest zaimplementowany w metodzie \emph{calculatePath} klasy Game.Entity.
 
 \begin{table}
 \begin{center}
@@ -444,7 +496,7 @@ W grze symulacyjnej wykorzystywana jest javascript'owa implementacja algorytmu A
 \end{center}
 \end{table}
 
-\subsection{Zauważanie przeciwnika}
+\subsection{Zauważanie przeciwnika}\label{detectionSubsection}
 
 \begin{figure}
 \begin{center}
@@ -484,7 +536,7 @@ Algorytm zauważania przeciwnika jest zaimplementowany w metodzie \emph{closestS
 \end{center}
 \end{figure}
 
-Antyterroryści w grze symulacyjnej poruszają się w szykiem liniowym (rysunek \ref{followEntityImage}). Taka kolumna zaatakowana bezpośrednio od przodu lub od tyłu ma najmniejszą siłę ogniową. Linia zaatakowana od boku posiada bardzo dużą siłę ogniową, bowiem antyterroryści nie zasłaniają sobie na wzajem celu. Algorytm podążania w linii jest zaimplementowany w metodzie \emph{followEntity} klasy Game.Antiterrorist. Próbuje on dla danej jednostki znaleźć przyjazną jednostkę, która ją poprzedza i nie zginęła. Jeżeli taka jednostka nie zostanie znaleziona, to oznacza to, że dana jednostka jest liderem i należy zmienić jej stan na \emph{follow path}. W przeciwnym wypadku dana jednostka wylicza i podąża do współrzędnych celu, które są ilocznynem odległości podążania oraz różnicy aktualnej pozycji znalezionego sprzymierzeńca i jego wektora prędkości. Pseudokod algorytmu jest zapisany w listingu \ref{followEntityCode}.
+Antyterroryści w grze symulacyjnej poruszają się w szyku liniowym (rysunek \ref{followEntityImage}). Taka kolumna zaatakowana bezpośrednio od przodu lub od tyłu ma najmniejszą siłę ogniową. Linia zaatakowana od boku posiada bardzo dużą siłę ogniową, bowiem antyterroryści nie zasłaniają sobie na wzajem celu. Algorytm podążania w linii jest zaimplementowany w metodzie \emph{followEntity} klasy Game.Antiterrorist. Próbuje on dla danej jednostki znaleźć przyjazną jednostkę, która ją poprzedza i nie zginęła. Jeżeli taka jednostka nie zostanie znaleziona, to oznacza to, że dana jednostka jest liderem i należy zmienić jej stan na \emph{follow path}. W przeciwnym wypadku dana jednostka wylicza i podąża do współrzędnych celu, które są ilocznynem odległości podążania oraz różnicy aktualnej pozycji znalezionego sprzymierzeńca i jego wektora prędkości. Pseudokod algorytmu jest zapisany w listingu \ref{followEntityCode}.
 
 \begin{table}
 \begin{center}
@@ -509,5 +561,48 @@ Antyterroryści w grze symulacyjnej poruszają się w szykiem liniowym (rysunek 
 \end{table}
 
 \subsection{Atakowanie jednostki}
-\subsection{Myślenie jednostek}
+Atak na wrogą jednostkę jest poprzedzany obserwacją, która przeprowadzana jest niezależnie od stanu, w jakim znajduje się aktualnie jednostka. Z tego algorytmu korzystają zarówno antyterroryści, jak i terroryści. Jest on zaimplementowany w metodzie \emph{watchForEnemy} klasy Game.Entity. Na początku metoda korzysta z algorytmu zauważania przeciwnika (rozdział \ref{detectionSubsection}). Jeżeli dana jednostka nie widzi w danym momencie potencjalnego przeciwnika, a obecnie znajduje się w stanie \emph{attack}, to następuje przejście do stanu domyślnego tej jednostki. Jednak gdy przeciwnik został znaleziony, ale nie był wcześniej obserwowany, to dana jednostka rozpoczyna jego obserwację ustawiając czas do ataku na zdefiniowany w parametrach czas reakcji. Gdy jednak znaleziony przeciwnik jest już obserwowany i upłynie czas do ataku, to dana jednostka przechodzi do stanu \emph{attack}, jeżeli tylko nie ma przed sobą żadnych sprzymierzeńców stojących na lini ognia. Pseudokod algorytmu jest zapisany w listingu \ref{watchForEnemyCode}.
 
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	najblizszy_przeciwnik = znajdz_najblizszego_przeciwnika();
+	JEZELI (NIE_ISTNIEJE(najblizszy_przeciwnik)) TO
+		JEZELI (ja.aktualny_stan == 'attack')
+			ja.pozycja_celu = null
+			ja.zmien_stan_na_domyslny()
+	WPP
+		JEZELI (najblizszy_przeciwnik != ja.obserwowany_przeciwnik) TO
+			ja.obserwowany_przeciwnik = najblizszy_przeciwnik
+			ja.czas_do_ataku = ja.czas_reakcji
+		WPP
+			ja.czas_do_ataku = ja.czas_do_ataku - 1
+			JEZELI (ja.czas_do_ataku < 0) TO
+				JEZELI lista_sprzymierzencow_na_drodze (ja.pozycja, najblizszy_przeciwnik.pozycja) JEST PUSTA TO
+					ja.jednostka_cel = najblizszy_przeciwnik
+					ja.zmien_stan('attack')									
+\end{lstlisting}
+\caption {Pseudokod algorytmu obserwowania wroga}
+\label{watchForEnemyCode}
+\end{center}
+\end{table}
+
+Realizacja ataku polega na wystrzeliwaniu pocisku co określony interwał czasowy. Jeżeli upływa czas do kolejnego strzału, to tworzona jest nowa instancja pocisku, którego pozycja i orientacja są zgodne z odpowiednikami u strzelca. Obiekt pocisku wykonuje metodę \emph{move}, która sprawdza, czy pocisk nie trafił w ścianę lub jednostkę. W tym drugim przypadku zadawane są obrażenia zgodnie z energią, jaką posiadał pocisk w momencie trafienia. Pseudokod algorytmu ataku jest zapisany w listingu \ref{attackCode}.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	ja.uaktualnij_pozycje_cel()
+	ja.seek()				
+	JEZELI (ja.czas_do_strzalu < 0) TO
+		ja.czas_do_strzalu = ja.czas_miedzy_strzalami
+		strzelec = ja
+		UTWROZ('pocisk', strzelec)
+	ja.czas_do_strzalu = ja.czas_do_strzalu - 1;
+\end{lstlisting}
+\caption {Pseudokod algorytmu atakowania wroga}
+\label{attackCode}
+\end{center}
+\end{table}
+
+\section{Parametryzacja}
