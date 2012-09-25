@@ -5,7 +5,7 @@ Game.Bullet = Game.Entity.extend({
     collisionRadius: 2,
     imageSrc: 'assets/bullet.png',
     shooter: null,
-    energy: 50,
+    energy: 200,
     bulletRange: 1000,
     dieAlpha: 0,
     attentionRange: 150,
@@ -51,7 +51,7 @@ Game.Bullet = Game.Entity.extend({
             entityHit.takeDamage(this.energy, this.shooter);
             this._drawTerroristsAttention();
         }
-        this.energy -= 0.5;
+        this.energy -= 5;
         this.seek();
     },
     _drawTerroristsAttention: function(){
