@@ -39,6 +39,7 @@
 %	\selecthyphenation{nohyphenation}
 %	\sloppy
 
+
 %ustawienia listingów
 \lstset{ %
 language=XML,                % choose the language of the code
@@ -67,14 +68,22 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \input{chapters/streszczenie.tex}
 
 % Spis treści
+\newpage
+\phantomsection \label{tocChapter}
+\addcontentsline{toc}{chapter}{Spis treści}
 \tableofcontents % Spis treści jest generowany automatycznie przez LaTeXa
-\let\cleardoublepage\clearpage % To taka mała sztuczka, która nie pozwala LaTeXowi wstawiać pustych stron przed nowymi rozdziałami
 \pagestyle{plain} % Ta komenda pozwala pozbyć się nagłówków stron
 
 % Oświadczenie
+\newpage
+\phantomsection \label{oswiadczenieChapter}
+\addcontentsline{toc}{chapter}{Oświadczenie}
 \input{chapters/oswiadczenie.tex}
 
-% Wstęp 
+% Wstęp
+\newpage
+\phantomsection \label{wprowadzenieChapter}
+\addcontentsline{toc}{chapter}{Wprowadzenie}
 \input{chapters/wprowadzenie.tex}
 
 % Rozdział 1
@@ -87,15 +96,28 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \input{chapters/rozdzial_3.tex}
 
 % Zakończenie
+\newpage
+\phantomsection \label{zakonczenieChapter}
+\addcontentsline{toc}{chapter}{Zakończenie}
 \input{chapters/zakonczenie.tex}
 
 % Literatura:
+\newpage
+\phantomsection \label{bibliografiaChapter}
+\addcontentsline{toc}{chapter}{Bibliografia}
 \bibliographystyle{unsrt}
 \nocite{*}
 \bibliography{chapters/bibliografia}
 
 % Spisy tabel i rysunków:
+\newpage
+\phantomsection \label{tabeleChapter}
+\addcontentsline{toc}{chapter}{\listtablename}
 \listoftables
+
+\newpage
+\phantomsection \label{rysunkiChapter}
+\addcontentsline{toc}{chapter}{\listfigurename}
 \listoffigures
 
 \end{document}

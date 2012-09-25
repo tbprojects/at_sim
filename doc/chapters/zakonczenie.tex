@@ -1,2 +1,18 @@
 \chapter*{Zakończenie}
-Tutaj zakończenie
+Realizacja projektu gry symulacyjnej, która jest przedmiotem tej pracy dyplomowej, rozpoczęła się od pomysłu wizualizacji odpowiednio uproszczonego procesu planowania operacji antyterrorystycznej. Po przygotowaniu pierwszej wersji szkicu interfejsu i rozpisaniu scenariuszy, jakie powinny zostać zaimplementowane w~pierwszym etapie, należało wybrać technologię, w jakiej gra będzie implementowana. Pierwszy prototyp powstał w języku Ruby z wykorzystaniem biblioteki Rubygame\footnote{strona projektu Rubygame - http://rubygame.org/}. Jednakże końcowy wybór padł na Javascript i HTML5 Canvas, które w tym wypadku są wspierane przez bibliotekę Kinetic.js. Na korzyść tych technologi przemawiało kilka faktów: 
+\begin{itemize}
+	\item Javascript posiada dużo mniej wymagające środowisko uruchomieniowe od Ruby'iego
+	\item Kinetic.js jest stale rozwijaną biblioteką w przeciwieństwie to Rubygame
+	\item implementacja interfejsu w HTML jest bardzo prosta
+\end{itemize}
+
+Implementacja kolejnych etapów następowała sprawnie. Informacja zwrotna uzyskiwana podczas testów przyczyniała się do dodania nowych funkcjonalności oraz motywowała do dalszej pracy. Każdy etap dostarczał nową, kompletną funkcjonalność. Gra symulacyjna może być nadal rozwijana, a najbliższe działania powinny się skupić na następujących obszarach:
+\begin{itemize}
+	\item Urozmaicenie taktyk terrorystów: terroryści mogą z określonym prawdopodobieństwem uciekać na widok antyterrorystów
+	\item Urozmaicenie taktyk antyterrorystów: podczas ataku antyterroryści zmieniają szyk na tyralierę, by dysponować większą siłą ogniową w kierunku celu
+	\item Refaktoring: wydzielenie części kodu Game.Entity do nowej klasy Game.Person
+	\item Interfejs: przygotowanie atrakcyjniejszej oprawy graficznej
+	\item Testy: sporządzenie testów automatycznych, weryfikujących poprawność działania interfejsu oraz ważniejszych metod publicznych
+\end{itemize}
+
+Wykorzystane technologie w zupełności wystarczyły do zaimplementowania projektu. Javascript i HTML5 Canvas można z powodzeniem wykorzystywać do wykonywania prostych, nie pochłaniających dużej ilości zasobów (CPU, Ram) aplikacji. Z drugiej strony, wraz z obserwowanym, bardzo szybkim tempem rozwoju technologi internetowych (np. gry 3D w przeglądarce z użyciem WebGL), możemy wkrótce się doczekać bardzo atrakcyjnych i wydajnych rozwiązań, które będą kreować nowe standardy w dziedzinie tworzenia gier wideo.

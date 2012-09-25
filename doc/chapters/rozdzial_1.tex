@@ -48,8 +48,8 @@ W grze symulacyjnej, będącej przedmiotem tej pracy dyplomowej, gracz może zap
 Gatunek gier symulacyjnych charakteryzuje się wiernym odzwierciedlaniem realiów świata rzeczywistego lub fikcyjnego. Prócz zastosowania rozrywkowego, gry symulacyjne wykorzystuje się do celów szkoleniowych (np. wirtualna nauka jazdy) lub badawczych (np. analiza bezpieczeństwa terytorialnego). Wśród symulacyjnych gier wideo należy wymieć kilka podgatunków\footnote{przedstawiona lista wywodzi się z podziału przedstawionego w książce A. Rollingsa i E. Adamsa\cite{gameDesign} i dopełniona jest podgatunkami omawianymi w różnych publikacjach internetowych}:
 
 \begin{description}
-	\item[Symulatory budowania i zarządzania] cechują się brakiem obecności wroga, którego gracz musi pokonać. Są to gry o pewnych procesach (ekonomicznych, politycznych, wytwórczych itp.), w ramach których gracz odgrywa rolę architekta i zarządcy. Obiektami budowanymi mogą być parki rozrywki, porty lotnicze, szpitale, zoo czy też miasta. Im lepiej gracz rozumie zachodzące procesy, tym skuteczniejszy w wykonywaniu powierzonych mu zadań. Pierwszym symulatorem tego typu była gra \textbf{SimCity} [Maxis 1989].
-	\item[Symulatory życia] pozwalają na kontrolowanie istnień i rozwijaniu relacji między nimi. Mechanizmy są to podobne do symulatorów budowania i zarządzania i często nie ma określonego kryterium zwycięstwa. Gry symulacyjne, gdzie gracz hoduje zwierzę lub jakiś antropomorficzny twór, skupiają się na tworzeniu i rozwijaniu relacji tej formy życia z graczem. Przykładami takich gier jest \textbf{The Sims} [Maxis 2000] oraz \textbf{Spore} [Maxis 2008].
+	\item[Symulatory budowania i zarządzania] cechują się brakiem obecności wroga, którego gracz musi pokonać. Są to gry o pewnych procesach (ekonomicznych, politycznych, wytwórczych itp.), w ramach których gracz odgrywa rolę architekta i zarządcy. Obiektami budowanymi mogą być parki rozrywki, porty lotnicze, szpitale, zoo czy też miasta. Im lepiej gracz rozumie zachodzące procesy, tym skuteczniejszy jest w wykonywaniu powierzonych mu zadań. Pierwszym symulatorem tego typu była gra \textbf{SimCity} [Maxis 1989].
+	\item[Symulatory życia] pozwalają na kontrolowanie istnień i rozwijaniu relacji między nimi. Mechanizmy są tu podobne do symulatorów budowania i zarządzania, często nie ma określonego kryterium zwycięstwa. Gry symulacyjne, gdzie gracz hoduje zwierzę lub jakiś antropomorficzny twór, skupiają się na tworzeniu i~rozwijaniu relacji tej formy życia z graczem. Przykładami takich gier jest \textbf{The Sims} [Maxis 2000] oraz \textbf{Spore} [Maxis 2008].
 	\item[Symulatory sportowe] pozwalają graczowi na wirtualne uprawianie dyscyplin sportowych, których zasady i kryteria zwycięstwa są zgodne z rzeczywistymi odpowiednikami\footnote{choć część zasad może być wyłączana, np. czas trwania meczu piłkarskiego lub błąd kroków w~koszykówce}. Często takie symulatory wymagają od swoich twórców modelowania rzeczywistych postaci ze świata sportu, wraz z uwzględnieniem ich umiejętności, charakterystycznych ruchów czy ubioru. Przykładami takich gier są gry z serii \textbf{Pro Evolution Soccer} [Konami] oraz \textbf{NBA Live} [EA Sports].
 	\item[Symulatory pojazdów] mają na celu dostarczyć graczom wrażeń, jakie mogliby odczuć podczas kierowania rzeczywistymi pojazdami, w określonych warunkach. Tego typu gry najcześciej charakteryzują się bardzo wysoką wiernością odzwierciedlenia pojazdów, do której należy zaliczyć takie czynniki jak wygląd, parametry jazdy lub lotu, wyposażenie oraz sterowanie. Przykładami takich gier jest seria \textbf{Colin McRae Rally} [Codemasters] oraz seria \textbf{Microsoft Flight Simulator} [Microsoft].
 	\item[Symulatory czynności i zawodów] to dość popularny w ostatnim czasie typ gier. Mają one na celu umożliwienie graczom na wirtualne wykonywanie prac związanych z zawodami, którymi na co dzień się nie zajmują. Przykładami takich gier jest \textbf{Symulator Farmy 2011} [Atari / Infogrames 2011] czy \textbf{Symulator Koparki 2011} [astragon Software 2011]. Realizm nie jest tutaj najważniejszym kryterium.
@@ -89,7 +89,7 @@ Analizując elementy składowe sztucznej inteligencji w grach wideo, należy odw
 
 W grze symulacyjnej, będącą przedmiotem tej pracy dyplomowej, będziemy mogli wyróżnić każdy z trzech elementów modelu sztucznej inteligencji:
 \begin{description}
-	\item[Podejmowanie decyzji] np. otwarcie ognia do wroga lub ucieczka
+	\item[Podejmowanie decyzji] np. otwarcie ognia do wroga
 	\item[Poruszanie się] np. poruszanie po ścieżce, wędrowanie
 	\item[Strategia] np. role i ich przejmowanie w grupie antyterrorystów
 \end{description}
@@ -113,7 +113,7 @@ Przed misją gracz otrzymuje dane wywiadowcze, które posiadają zbliżony chara
 	\item zdefiniować lokacje, w których drużyna będzie czekała na polecenia innej drużyny
 \end{enumerate}
 
-Po zaplanowaniu operacji antyterrorystycznej, gracz może uczestniczyć aktywnie w rozgrywce (będąc dowódcą jednej z drużyn) lub przyglądać się jej w roli obserwatora. Celem misji jest najczęściej odbicie zakładników, ale może też nim być rozbrojenie ładunków wybuchowych, zdobycie danych lub eliminacja konkretnej postaci. Element planowania misji wyróżnia Rainbow Six spośród innych gier o podobnej tematyce. Gra okazała się na tyle popularna, że doczekała się kolejnych części\footnote{więcej informacji o grze Rainbow Six można znaleźć w Encyklopedii Gier\cite{rainbowSix}}.
+Po zaplanowaniu operacji antyterrorystycznej, gracz może uczestniczyć aktywnie w rozgrywce (będąc dowódcą jednej z drużyn) lub przyglądać się jej w roli obserwatora. Celem misji jest najczęściej odbicie zakładników, ale może też nim być rozbrojenie ładunków wybuchowych, zdobycie danych lub eliminacja konkretnej postaci. Element planowania misji wyróżnia Rainbow Six spośród innych gier o podobnej tematyce. Gra okazała się na tyle popularna, że doczekała się kolejnych części.
 
 Różnice pomiędzy planowaniem operacji antyterrorystycznej w Rainbow Six a~grą symulacyjną, będącą przedmiotem tej pracy dyplomowej, wymieniono w tabeli~\ref{diffTab}
 
@@ -144,7 +144,7 @@ Rainbow Six & Gra symulacyjna\\\hline
 
 Istnieje duża ilość bibliotek javascript'owych, które ułatwiają pracę z HTML5 Canvas. Jedną z nich jest \textbf{Kinetic.js}, która dodatkowo pozwala na animowanie obiektów na scenie, przetwarzanie ich (translacje, rotacje, skalowanie itp.) oraz obsługę zdarzeń. Scena w Kinetic.js jest złożona z warstw zdefiniowanych przez użytkownika. Każda warstwa składa się z dwóch kontekstów: kontekst sceny i kontekst bufora. Podczas gdy kontekst sceny reprezentuje to, co jest renderowane na ekranie, to kontekst bufora odpowiada za wydajną obsługę zdarzeń. Każda warstwa może zawierać kształty lub grupy kształtów, które mogą być indywidualnie lub grupowo przetwarzane.
 
-W grze symulacyjnej, będącą przedmiotem tej pracy dyplomowej, zostały zastosowane następujące biblioteki javascript'owe:
+W grze symulacyjnej, będącej przedmiotem tej pracy dyplomowej, zostały zastosowane następujące biblioteki javascript'owe:
 \begin{itemize}
 	\item Kinetic.js\cite{kineticPage} - pozwala na renderowanie obiektów oraz ich przetwarzanie
 	\item Sylvester\cite{sylvesterPage} - pozwala na obliczenia na wektorach 
