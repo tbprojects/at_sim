@@ -14,7 +14,7 @@ Game.Entity = Kinetic.Image.extend(
     speed: 0,
     avoidDistance: 12,
     lookAhead: 14,
-    arrivePrecision: 2,
+    arrivePrecision: 3,
     targetEntity: null,
     watchedEntity: null,
     healthPoints: 100,
@@ -262,7 +262,7 @@ Game.Entity = Kinetic.Image.extend(
         this.nodeIndex = 0;
         var startNode = this.getNodeByPosition();
         var endNode = Game.getNodeByPosition(x,y);
-        this.path = astar.search(Game.map.graph.nodes, startNode, endNode);
+        this.path = astar.search(Game.map.graph.nodes, startNode, endNode, true);
     },
     checkDirection: function(){
         var node = this.path[this.nodeIndex];
