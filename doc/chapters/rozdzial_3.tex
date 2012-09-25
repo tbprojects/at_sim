@@ -105,7 +105,7 @@ Obiekt \textbf{Sounds} zawiera definicję ścieżek do plików dźwiękowych wyk
 
 Obiekt klasy \textbf{Game.Map} rozszerza klasę Kinetic.Rect. Zawiera on referencje do elementów konfiguracji symulacji - ściany, punkty kluczowe. Ponadto obiekt mapy zawiera graf reprezentujący stan poszczególnych pól na mapie (zajęte lub niezajęte), co jest potrzebne podczas generowania ścieżek dla poruszających się jednostek. Obiekt mapy posiada także metody pozwalające na serializowanie konfiguracji do formatu JSON\footnote{JavaScript Object Notation - tekstowy format wymiany danych, alternatywa dla XML} oraz do importu konfiguracji dostarczonej w takim formacie. Obsługa zdarzeń nad sceną, których źródłem jest urządzenie wskazujące, jest również zaimplementowana na obiekcie mapy. Opis atrybutów oraz zaimplementowanych metod znajduje się w tabeli \ref{objectsGameMap}.  
 
-\begin{table}[h]
+\begin{table}
 \begin{center}
 \begin{tabular}{|p{0.28\textwidth}|p{0.72\textwidth}|}
 \hline
@@ -256,7 +256,7 @@ Klasa \textbf{Game.Entity} rozszerza klasę Kinetic.Image. Sama stanowi podstaw�
 \end{center}
 \end{table} 
 
-\begin{table}[p]
+\begin{table}
 \begin{center}
 \begin{tabular}{|p{0.34\textwidth}|p{0.66\textwidth}|}
 \hline
@@ -379,14 +379,13 @@ Klasa \textbf{Game.Bullet} rozszerza klasę Game.Entity. Instancje tej klasy rep
 \caption {Klasa pocisku - Game.Bullet\label{objectsGameBullet}}
 \end{center}
 \end{table} 
-
+\clearpage
 Poza wymienionymi klasami, w grze symulacyjnej zdefiniowane są jeszcze klasy, które wyłącznie nadpisują konfigurację wyświetlania kształtu. Należą do nich:
 \begin{itemize}
 	\item Game.Zone - dziedziczy z klasy Kinetic.Circle. Instancje tej klasy reprezentują punkt startowy / początkowy antyterrorystów
 	\item Game.GridLine - dziedziczy z klasy Kinetic.Line. Instancje tej klasy reprezentują siatkę narzuconą na scenę
 \end{itemize}
 
-\clearpage
 \section{Sztuczna inteligencja - taktyki}
 W grze symulacujnej, będącej przedmiotem niniejszej pracy dyplomowej, terroryści oraz antyterroryści posiadają sztuczną inteligencję\footnote{charakterystyka modelu SI została przedstawiona w rozdziale \ref{aiModelInfo}}, która pozwala im na podejmowanie decyzji oraz poruszanie się. Interfejsem, z którego jednostki uczestniczące w symulacji czerpią wiedzę o świecie gry, jest obiekt Game. 
 
@@ -416,10 +415,99 @@ Każdy terrorysta także może zmienić swój stan na podstawie zaistniałego zd
 
 Zdarzeniem wspólnym dla antyterrorystów oraz dla terrorystów jest otrzymanie śmiertelnego trafienia. W tym przypadku natychmiastowo zmieniany jest stan jednostki na bezczynność - \emph{idle}. Jednostka pozostająca w stanie bezczynnośći nie reaguje na zdarzenia, co skutkuje brakiem możliwości zmiany swego stanu.
 
-
 \section{Opis algorytmów}
+W tym rozdziale zostaną przedstawione wybrane algorytmy, jakie są wykorzystywane w grze symulacyjnej, będącej przedmiotem tej pracy dyplomowej. Słowny opis jest uzupełniony pseudokodami lub implementacją w języku Javascript.
+
 \subsection{Wyznaczanie ścieżki - A*}
-\subsection{Zauważanie wrogów}
+Wyznaczanie ścieżek bezkolizyjnych (uwzględniających położenie ścian na mapie) jest realizowane porzez algorytm A*, który na bazie grafu jest w stanie odnaleźć drogę między dwoma zadanymi węzłami. W grze symulacyjnej graf zawiera węzły, które mogą mieć przypisany jeden z dwóch stanów: otwarty lub zamknięty. Wyliczona ścieżka nigdy nie prowadzi przez węzły zamknięte.
+
+Algorytm został opisany przez Petera Harta, Nilsa Nilssona oraz Bertrama Raphaela w 1968 roku i początkowo nosił nazwę \emph{A}. Jednkaże ze względu na zastosowanie heurystyki, polegającej na przeszukiwaniu grafu z pierwszeństem analizy węzłów obiecujących (tj. tych, które znajdują się bliżej węzła docelowego), nadano algorytmowi nazwę \emph{A*}.
+
+W grze symulacyjnej wykorzystywana jest javascript'owa implementacja algorytmu A*, przygotowana przez Briana Grinsteada w formie biblioteki javascript-astar\cite{astarPage}. Inicjalizacja grafu oraz przykład wyszukiwania ścieżki został przedstawione w listingu \ref{astarCode}. W definicji grafu \emph{1} oznacza węzeł otwarty, a \emph{0} węzeł zamknięty. Podczas definiowania przez użytkownika konfiguracji symulacji, w miejscu gdzie jest postawiona ściana węzły grafu zmieniają swój typ na zamknięty. Wynikiem wykonania wyszukiwania jest uporządkowana lista węzłów, jakie jednostka musi odwiedzić w drodze do celu.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	var graph = new Graph([
+		[1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,0,1,1,1,1],
+		[1,1,1,1,0,0,1,1,1,1],
+		[1,1,1,1,0,0,1,1,1,1],
+		[1,1,1,1,1,1,1,1,1,1],
+	]);
+	var start = graph.nodes[0][0];
+	var end = graph.nodes[9][4];
+	var result = astar.search(graph.nodes, start, end);
+ \end{lstlisting}
+\caption {Inicjalizacja grafu 10x5 oraz wyszukiwanie ścieżki między węzłami}
+\label{astarCode}
+\end{center}
+\end{table}
+
+\subsection{Zauważanie przeciwnika}
+
+\begin{figure}
+\begin{center}
+	\includegraphics[width=80mm,height=53mm]{images/detection}
+	\caption[Zauważanie przeciwnika]{Zauważanie przeciwnika: Najbliższym przeciwnikiem jednostki A jest jednostka B. Jednostka C nie jest analizowana, ponieważ znajduje się za ścianą. Zielona linia to linia sprawdzająca ew. kolizje dla jednostki A\label{detectionImage}}
+\end{center}
+\end{figure}
+
+Algorytm zauważania przeciwnika jest zaimplementowany w metodzie \emph{closestSeenOpponent} klasy Game.Entity. Zwraca on referencję do najbliższego przeciwnika, będącego w zasięgu wzroku. Algorym iteruje po liście przeciwników, dokonując szeregu sprawdzeń tylko dla tych jednostek, które jeszcze żyją. Tzw. \emph{dłuższy dystans} obliczany jest między pozycją obserwującej jednostki a pozycją potencjalnego przeciwnika. \emph{Krótszy dystans} obliczany jest między końcem linii sprawdzającej ew. kolizje dla jednostki obserwującej a pozycją potencjalnego przeciwnika (rysunek \ref{detectionImage}). Jeżeli \emph{krótszy dystans} jest rzeczywiście mniejszy od \emph{dłuższego dystansu}, to oznacza to, że przeciwnik jest przed jednostką obserwującą\footnote{jednostki będące za plecami jednostki obserwującej są ignorowane}. Jeżeli dystans pomiędzy jednostkami jest większy od zasięgu wzroku lub jest wiekszy niż zapamiętany dystans do aktualnego celu, to taki przeciwnik jest ignorowany. Jeżeli jednak odległości są mniejsze, a przeciwnik nie znajduje się za jakąkolwiek ścianą, to oznaczamy go za cel i zapamiętujemy nowy, aktualny dystans do celu. Pseudokod algorytmu jest zapisany w listingu \ref{detectionCode}.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	cel = null
+	dystans_do_celu = ja.zasieg_wzroku
+	DLA KAZDEGO przeciwnik z lista_przeciwnikow WYKONUJ
+		JEZELI przeciwnik.nie_zyje TO wykonaj_nastepna_iteracje
+		dluzszy_dystans = oblicz_dystans (ja.pozycja, przeciwnik.pozycja)
+		krotszy_dystans = oblicz_dystans (ja.koniec_promienia_kolizji, przeciwnik.pozycja)
+		JEZELI krotszy_dystans < dluzszy_dystans ORAZ krotszy_dystans < dystans_do_celu TO
+			JEZELI lista_scian_na_drodze (ja.pozycja, przeciwnik.pozycja) JEST PUSTA TO
+				cel = przeciwnik
+				dystans_do_celu = krotszy_dystans		
+	ZWROC cel	
+\end{lstlisting}
+\caption {Pseudokod algorytmu zauważania przeciwnika}
+\label{detectionCode}
+\end{center}
+\end{table}
+
 \subsection{Podążanie jednostek w linii}
+
+\begin{figure}
+\begin{center}
+	\includegraphics[width=80mm,height=53mm]{images/followEntity}
+	\caption[Podążanie jednostek w linii]{Podążanie jednostek w linii: Jednostka A jest liderem. Z jednostką A, w określonym odstępie porusza się jednostka B, natomiast za jednostką B porusza się jednostka C\label{followEntityImage}}
+\end{center}
+\end{figure}
+
+Antyterroryści w grze symulacyjnej poruszają się w szykiem liniowym (rysunek \ref{followEntityImage}). Taka kolumna zaatakowana bezpośrednio od przodu lub od tyłu ma najmniejszą siłę ogniową. Linia zaatakowana od boku posiada bardzo dużą siłę ogniową, bowiem antyterroryści nie zasłaniają sobie na wzajem celu. Algorytm podążania w linii jest zaimplementowany w metodzie \emph{followEntity} klasy Game.Antiterrorist. Próbuje on dla danej jednostki znaleźć przyjazną jednostkę, która ją poprzedza i nie zginęła. Jeżeli taka jednostka nie zostanie znaleziona, to oznacza to, że dana jednostka jest liderem i należy zmienić jej stan na \emph{follow path}. W przeciwnym wypadku dana jednostka wylicza i podąża do współrzędnych celu, które są ilocznynem odległości podążania oraz różnicy aktualnej pozycji znalezionego sprzymierzeńca i jego wektora prędkości. Pseudokod algorytmu jest zapisany w listingu \ref{followEntityCode}.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	indeks = ja.indeks_w_grupie
+	POWTARZAJ
+		indeks = indeks - 1
+		sprzymierzeniec = sprzymierzency[indeks]
+	DOPOKI (ISTNIEJE(sprzymierzeniec) ORAZ sprzymierzeniec.nie_zyje)
+	JEZELI (NIE_ISTNIEJE(sprzymierzeniec)) TO
+		ja.jestLiderem = PRAWDA
+		ja.zmien_stan('follow path')
+	WPP
+		ja.jednostka_cel = sprzymierzeniec
+
+	ja.pozycja_celu = (sprzymierzeniec.wektor_pozycji - sprzymierzeniec.wektor_predkosci) * ja.odleglosc_podazania
+	ja.seek()
+\end{lstlisting}
+\caption {Pseudokod algorytmu podążania za jednostką}
+\label{followEntityCode}
+\end{center}
+\end{table}
+
 \subsection{Atakowanie jednostki}
+\subsection{Myślenie jednostek}
 
