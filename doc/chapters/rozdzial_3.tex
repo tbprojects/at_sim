@@ -576,6 +576,54 @@ Realizacja ataku polega na wystrzeliwaniu pocisku co określony interwał czasow
 \end{center}
 \end{table}
 
+\subsection{Sprawdzanie lokacji}
+
+W szczególnych przypadkach jednostki mogą przejść do stanu \emph{check location}, którego definicja nakazuje przejście jednostki do zadanego miejsca na mapie. Przed przejściem do tego stanu jest ustawiany cel i obliczana bezkolizyjna ścieżka do niego (listing \ref{checkLocationSet}). Dla antyterrorystów przejście do stanu \emph{check location} jest wywoływane w następujących sytuacjach:
+\begin{itemize}
+	\item antyterrorysta nie będący liderem natrafi na ścianę, która odgradza go od antyterrorysty poprzednika; wyznaczanym celem jest pozycja poprzednika na mapie
+	\item antyterrorysta otrzyma trafienie; wyznaczanym celem jest pozycja strzelca na mapie
+\end{itemize}
+
+Terroryści również korzystają z implementacji stanu \emph{check location}. W ich przypadku stan ten jest wywoływany gdy:
+\begin{itemize}
+	\item terrorysta usłyszy odgłos wystrzału lub trafienia; wyznaczanym celem jest pozycja pocisku w momencie wystrzału lub trafienia
+	\item antyterrorysta otrzyma trafienie; wyznaczanym celem jest pozycja strzelca na mapie
+\end{itemize}
+
+Jednostki posiadają ograniczony czas na przejście do zadanej lokacji (listing \ref{checkLocationDo}). Antyterroryści posiadają bardzo niską wartość maksymalnego czasu na sprawdzenie lokacji, gdyż priorytetem dla nich jest wykonanie planu poruszając się w grupie, gdzie posiadają większą siłę ognia. Warunkiem wyścia ze stanu jest upłynięcie czasu na sprawdzenie lokacji lub dotarcie do niej. Jednostka opuszczająca stan \emph{check location} przechodzi do własnego domyślnego stanu.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	ja.czas_na_sprawdzenie_lokacji = ja.maksymalny_czas_na_sprawdzenie_lokacji
+	ja.wytycz_sciezke_do(cel)
+	ja.zmien_stan('check location')
+\end{lstlisting}
+\caption {Pseudokod algorytmu sprawdzania lokacji (metoda setCheckLocation)}\label{checkLocationSet}
+\label{attackCode}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+	wezel = sciezka[ja.indeks_wezla]
+	JEZELI (ja.czas_na_sprawdzenie_lokacji < 0 LUB NIE_ISTNIEJE(wezel)) TO
+		ja.zmien_stan_na_domyslny()	
+	WPP
+		ja.pozycja_celu = wspolrzedne_wezla(wezel)
+		JEZELI (ja.dotarl_do_celu) TO
+			ja.indeks_wezla = ja.indeks_wezla + 1
+		ja.czas_na_sprawdzenie_lokacji = ja.czas_na_sprawdzenie_lokacji - 1
+		ja.seek()	
+\end{lstlisting}
+\caption {Pseudokod algorytmu sprawdzania lokacji (metoda checkLocation)}\label{checkLocationDo}
+\label{attackCode}
+\end{center}
+\end{table}
+
+
 \section{Parametryzacja}
 
 Antyterroryści i terroryści w grze symulacyjnej współdzielą część metod oraz parametrów, które dziedziczą z klasy Game.Entity. Jednakże część parametrów wpływających na przebieg symulacji ma u nich różne wartości. Stroną faworyzowaną są tutaj antyterroryści, u których zakłada się, że są lepiej wyposażeni (np. większa szybkostrzelność broni, kamizelki kuloodporne) oraz są lepiej wyszkoleni (np. szybciej potrafią zareagować na pojawienie się przeciwnika). Dzięki takiej parametryzacji mniej liczebny odział antyterrorystów ma wyrównane szanse walki z liczniejszymi terrorystami. Tabela \ref{parameters} przedstawia porównanie wartości wybranych parametrów jednostek.
