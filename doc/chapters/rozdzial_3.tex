@@ -103,7 +103,7 @@ Obiekt \textbf{Sounds} zawiera definicję ścieżek do plików dźwiękowych wyk
 \end{center}
 \end{table} 
 
-Obiekt klasy \textbf{Game.Map} rozszerza klasę Kinetic.Rect. Zawiera on referencje do elementów konfiguracji symulacji - ściany, punkty kluczowe. Ponadto obiekt mapy zawiera graf reprezentujący stan poszczególnych pól na mapie (zajęte lub niezajęte), co jest potrzebne podczas generowania ścieżek dla poruszających się jednostek. Obiekt mapy posiada także metody pozwalające na serializowanie konfiguracji do formatu JSON\footnote{JavaScript Object Notation - tekstowy format wymiany danych, alternatywa dla XML} oraz do importu konfiguracji dostarczonej w takim formacie. Obsługa zdarzeń nad sceną, których źródłem jest urządzenie wskazujące, jest również zaimplementowana na obiekcie mapy. Opis atrybutów oraz zaimplementowanych metod znajduje się w tabeli \ref{objectsGameMap}.  
+Obiekt klasy \textbf{Game.Map} rozszerza klasę Kinetic.Rect. Zawiera on referencje do elementów konfiguracji symulacji - ściany, punkty kluczowe. Ponadto obiekt mapy zawiera graf, którego węzły odpowiadają poszczególnym polom na mapie. Polami są kwadratowe kafelki, które są widoczne dzięki narzuceniu siatki na mapę. Wezeł w grafie może mieć jeden z dwóch stanów: otwarty lub zamknięty. Dzięki zastosowaniu grafu możliwe jest generowanie ścieżek dla poruszających się jednostek algorytmem A* (rozdział \ref{graph}). Obiekt mapy posiada także metody pozwalające na serializowanie konfiguracji do formatu JSON\footnote{JavaScript Object Notation - tekstowy format wymiany danych, alternatywa dla XML} oraz do importu konfiguracji dostarczonej w takim formacie. Obsługa zdarzeń nad sceną, których źródłem jest urządzenie wskazujące, jest również zaimplementowana na obiekcie mapy. Opis atrybutów oraz zaimplementowanych metod znajduje się w tabeli \ref{objectsGameMap}.  
 
 \begin{table}
 \begin{center}
@@ -439,9 +439,51 @@ Antyterroryści i terroryści w grze symulacyjnej posiadają zaimplementowaną m
 \end{center}
 \end{table}
 
-Gdy cel jest już zdefiniowany, to wykonywane są algorytmy niższego poziomu, odpowiedzialne za obliczenie wektora prędkości oraz prędkości, z jaką ma poruszać się jednostka. Takimi algorytmami są \emph{seek} (ruch w kierunku celu) oraz \emph{flee} (ruch w przeciwnym kierunku do celu). Następnie otrzymane dane są wykorzystywane przez funkcję \emph{update}, która przesuwa jednostkę na ekranie i nadaje jej odpowiednią orientację.
+Gdy cel jest już zdefiniowany, to wykonywane są algorytmy niższego poziomu, odpowiedzialne za obliczenie wektora prędkości oraz prędkości, z jaką ma poruszać się jednostka. Takimi algorytmami są \emph{seek} (ruch w kierunku celu) oraz \emph{flee} (ruch w przeciwnym kierunku do celu). Metoda think jest wywoływana wewnątrz metody \emph{update} (listing \ref{update}), która służy do zmiany pozycji obiektu na scenie. Po wykonaniu metody \emph{think} zmieniana jest aktualna pozycja obiektu o wyliczony wektor prędkości, natomiast orientacja obiektu jest uaktualniana, by była zgodna z wektorem prędkości. Aktualizacja pozycji i orientacji nie następuje, gdy gra jest w trybie pauzy lub dany obiekt ruchomy już nie żyje.
 
-\subsection{Wyznaczanie ścieżki - A*}
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+    update: function(frame) {
+        if (!Game.paused && this.isAlive) {
+            this.think();
+            if (this.hasVelocity()) {
+                this._updateCollisionRay();
+                var pos = this.getVecPosition().add(this.getVecVelocity().multiply(frame.timeDiff * this.speed));
+                this.setPosition(pos.e(1),pos.e(2));
+                var rot = Math.atan2(-this.getVecVelocity().e(1), this.getVecVelocity().e(2));
+                this.setRotation(rot);
+            }
+        }
+   }
+ \end{lstlisting}
+\caption {Metoda update w klasie Game.Entity}
+\label{update}
+\end{center}
+\end{table}
+
+Metoda update jest wywoływana w anonimowej funkcji, przypisanej do zdarzenia zmiany klatki animacji\footnote{definicja obsługi tego zdarzenia znajduje się w metodzie Game.init()}. Obsługa tego zdarzenia stanowi główną pętlę aplikacji. Co klatkę następuje iteracja po wszystkich warstwach przypisanych do sceny (listing \ref{onFrame}). Dla każdej warstwy interujemy po wszystkich obiektach, jakie zostały dodane do danej warstwy. Jeżeli obiekt posiada zdefiniowaną metodę update (co oznacza, że jego klasa dziedziczy z Game.Entity), to jest ona wykonywana. Po przetworzeniu wszystkich obiektów w danej warstwie, wykonywana jest metoda draw, która renderuje ponownie warstwę na scenie.
+
+\begin{table}
+\begin{center}
+\begin{lstlisting}
+    this.stage.onFrame(function(frame) {
+          for(var layerIndex in self.stage.getChildren()) {
+              var layer = self.stage.getChildren()[layerIndex];
+              for (var objectIndex in layer.getChildren()) {
+                  var object = layer.getChildren()[objectIndex];
+                  if(object.update) object.update(frame);
+              }
+              layer.draw();
+          }
+    });
+ \end{lstlisting}
+\caption {Rysowanie klatek animacji}
+\label{onFrame}
+\end{center}
+\end{table}
+
+\subsection{Wyznaczanie ścieżki - A*}\label{graph}
 Wyznaczanie ścieżek bezkolizyjnych (uwzględniających położenie ścian na mapie) jest realizowane poprzez algorytm A*, który na bazie grafu jest w stanie odnaleźć drogę między dwoma zadanymi węzłami. W grze symulacyjnej graf zawiera węzły, które mogą mieć przypisany jeden z dwóch stanów: otwarty lub zamknięty. Wyliczona ścieżka nigdy nie prowadzi przez węzły zamknięte.
 
 Algorytm został opisany przez Petera Harta, Nilsa Nilssona oraz Bertrama Raphaela w 1968 roku i początkowo nosił nazwę \emph{A}. Jednakże ze względu na zastosowanie heurystyki, polegającej na przeszukiwaniu grafu z pierwszeństwem analizy węzłów obiecujących (tj. tych, które znajdują się bliżej węzła docelowego), nadano algorytmowi nazwę \emph{A*}.
