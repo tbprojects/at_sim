@@ -245,8 +245,8 @@ Klasa \textbf{Game.Entity} rozszerza klasę Kinetic.Image. Sama stanowi podstaw�
     nodeIndex & indeks aktualnie odwiedzanego węzła na ścieżce\\
     path & ścieżka reprezentowana przez tablicę węzłów\\
     currentState & nazwa aktualnego stanu obiektu\\
-    checkDirectionTimeMax & maksymalny czas, jaki może zostać poświęcony na sprawdzenie kierunku\\
-    checkDirectionTime & aktualny czas, jaki pozostał na sprawdzenie kierunku\\
+    checkLocationTimeMax & maksymalny czas, jaki może zostać poświęcony na sprawdzenie lokacji\\
+    checkLocationTime & aktualny czas, jaki pozostał na sprawdzenie lokacji\\
     sightDistance & zasięg wzroku obiektu\\
     name & nazwa typu obiektu\\
     enemyName & nazwa wrogiego typu obiektu
@@ -287,8 +287,8 @@ Klasa \textbf{Game.Entity} rozszerza klasę Kinetic.Image. Sama stanowi podstaw�
 	watchForEnemy & metoda pozwalająca na obserwowanie przeciwnika i po określonym czasie przejście do ataku\\
 	attack & atakowanie przeciwnika poprzez oddawanie strzałów co określony interwał czasowy\\
 	calculatePath & wyliczanie ścieżki do zadanego celu\\
-	checkDirection & metoda pozwalająca na przejście po ścieżce do wcześniej wytyczonego celu\\
-	setCheckDirection & metoda określająca cel, do którego należy dotrzeć wg wytyczonej ścieżki\\
+	checkLocation & metoda pozwalająca na przejście po ścieżce do wcześniej wytyczonego celu\\
+	setCheckLocation & metoda określająca cel, do którego należy dotrzeć wg wytyczonej ścieżki\\
 	\_logDeath & tworzenie wpisu w logach o śmierci obiektu\\
 	\_updateCollisionRay & uaktualnia położenie linii, która sprawdza możliwość wystąpienia kolizji\\
 	\_calculateVelocity & wyliczanie wektora prędkości
@@ -321,7 +321,7 @@ Klasa \textbf{Game.Terrorist} rozszerza klasę Game.Entity. Instancje tej klasy 
 	followExtraction & podążanie do punktu startowego / końcowego antyterrorystów\\
 	avoid & omijanie napotkanej ściany poprzez wytyczenie ścieżki\\
 	changeToDefaultState & zmiana stanu do domyślnego (dla antyterrorystów jest to \emph{followEntity})\\
-	\_reactOnDamage & reakcja na postrzał (dla antyterrorystów jest to sprawdzenie kierunku z którego padł strzał)
+	\_reactOnDamage & reakcja na postrzał
 \\\hline
 \end{tabular}
 \caption {Klasa antyterrorysty - Game.Antiterrorist\label{objectsGameAntiterrorist}}
@@ -352,7 +352,7 @@ Klasa \textbf{Game.Terrorist} rozszerza klasę Game.Entity. Instancje tej klasy 
 	avoid & omijanie napotkanej ściany poprzez skierowanie terrorysty do punktu wyznaczanego przez normalną ściany\\
 	changeToDefaultState & zmiana stanu do domyślnego (dla terrorystów jest to \emph{wander})\\
 	\_wantToStand & sprawdzenie czy terrorysta na wykonać postój\\
-	\_reactOnDamage & reakcja na postrzał (dla terrorystów jest to sprawdzenie kierunku z którego padł strzał)
+	\_reactOnDamage & reakcja na postrzał
 \\\hline
 \end{tabular}
 \caption {Klasa terrorysty - Game.Terrorist\label{objectsGameTerrorist}}
@@ -386,35 +386,6 @@ Poza wymienionymi klasami, w grze symulacyjnej zdefiniowane są jeszcze klasy, k
 	\item Game.GridLine - dziedziczy z klasy Kinetic.Line. Instancje tej klasy reprezentują siatkę narzuconą na scenę
 \end{itemize}
 
-\section{Sztuczna inteligencja - taktyki}\label{tacticts}
-W grze symulacyjnej, będącej przedmiotem niniejszej pracy dyplomowej, terroryści oraz antyterroryści posiadają sztuczną inteligencję\footnote{charakterystyka modelu SI została przedstawiona w rozdziale \ref{aiModelInfo}}, która pozwala im na podejmowanie decyzji oraz poruszanie się. Interfejsem, z którego jednostki uczestniczące w symulacji czerpią wiedzę o świecie gry, jest obiekt Game. 
-
-Terroryści nie posiadają grupowej strategii działania, kierują się wyłącznie indywidualnie podejmowanymi decyzjami. Natomiast antyterroryści posiadają strategię, która nakazuje im posiadanie lidera przez cały czas trwania symulacji. Lider antyterrorystów jest jednostką, za którą w szyku poruszają się pozostali antyterroryści. Jeżeli lider zginie, to natychmiastowo wybierany jest nowy lider, a działania grupy są kontynuowane.
-  
-Antyterrorysta posiada skończony zbiór stanów (rysunek \ref{atTacticImage}), które odzwierciedlają podjęte przez niego decyzje i definiują jego działania. Po zainicjalizowaniu obiektu antyterrorysty przechodzi on do stanu \emph{follow entity}, który pozwala mu podążać za swoimi poprzednikami. Jest to domyślny stan, do którego antyterrorysta może wrócić ze stanów, do których przeszedł na podstawie zdarzenia. Jeżeli antyterrorysta jest liderem, to następuje natychmiastowe przejście do stanu \emph{follow path}, które definiuje konieczność poruszania się po wyznaczonej ścieżce do następnego punktu kluczowego. Wraz z dotarciem do danego punktu kluczowego, wyznaczana jest ścieżka do następnego punktu kluczowego. Jeżeli antyterrorysta lider dotarł do ostatniego punktu kluczowego, to zmienia on swój stan na \emph{follow extraction}, który nakazuje jednostce poruszanie się po ścieżce do punktu startowego / końcowego antyterrorystów. Po dotarciu do tego punktu antyterrorysta zatrzymuje się i przechodzi do stanu bezczynności - \emph{idle}.
-
-\begin{figure}
-\begin{center}
-	\includegraphics[width=160mm,height=167mm]{images/atTactic}
-	\caption{Diagram przejść międzystanowych antyterrorysty\label{atTacticImage}}
-\end{center}
-\end{figure}
-
-Każdy antyterrorysta może zmienić swój stan na podstawie zaistniałego zdarzenia. Postrzelenie antyterrorysty lub natrafienie przez niego na ścianę, wiąże się z~natychmiastowym wywołaniem stanu \emph{check direction}. Stan ten definiuje poruszanie się jednostki do zadanego punktu, z wykorzystaniem wyliczonej ścieżki bezkolizyjnej. Antyterrorysta opuszcza ten stan po dotarciu do celu lub po upłynięciu limitu czasowego na wykonanie tej czynności. Zdarzenie polegające na zauważeniu przeciwnika, wywołuje stan \emph{attack}. Stan ten pozwala antyterroryście na oddawanie strzałów w kierunku zauważonego terrorysty, jeżeli na linii strzału nie znajduje się żaden antyterrorysta. Wyjście z tego stanu następuje po zabiciu terrorysty lub po straceniu celu z pola widzenia.
-
-Terrorysta również posiada skończony zbiór stanów (rysunek \ref{terTacticImage}). Po zainicjalizowaniu obiektu terrorysty przechodzi on do stanu \emph{wander}, który pozwala mu na wędrowanie po świecie gry. Podczas wędrowania terrorysta może podjąć decyzję o~wykonaniu postoju, co wiąże się z przejściem do stanu \emph{stand}. Stan ten zatrzymuje jednostkę oraz odlicza czas pozostały do końca postoju, a po jego upłynięciu zmienia stan terrorysty ponownie na \emph{wander}.
-
-\begin{figure}
-\begin{center}
-	\includegraphics[width=160mm,height=139mm]{images/terTactic}
-	\caption{Diagram przejść międzystanowych terrorysty\label{terTacticImage}}
-\end{center}
-\end{figure}
-
-Każdy terrorysta także może zmienić swój stan na podstawie zaistniałego zdarzenia. Postrzelenie terrorysty lub usłyszenie przez niego odgłosu wystrzału skutkuje wywołaniem stanu \emph{check direction}, który definiuje identyczne zachowanie i warunek wyjścia ze stanu, jak w przypadku antyterrorysty. Podobnie jest ze zdarzeniem polegającym na zauważeniu przeciwnika. Wywołuje ono stan \emph{attack}, który nakazuje terroryście strzelać do wrogiej jednostki. Warunek wyjścia z tego stanu jest taki sam, jak u antyterrorysty.
-
-Zdarzeniem wspólnym dla antyterrorystów oraz dla terrorystów jest otrzymanie śmiertelnego trafienia. W tym przypadku natychmiastowo zmieniany jest stan jednostki na bezczynność - \emph{idle}. Jednostka pozostająca w stanie bezczynności nie reaguje na zdarzenia, co skutkuje brakiem możliwości zmiany swego stanu.
-
 \section{Opis algorytmów}
 W tym rozdziale zostaną przedstawione wybrane algorytmy, jakie są wykorzystywane w grze symulacyjnej, będącej przedmiotem tej pracy dyplomowej. Słowny opis jest uzupełniony pseudokodami lub implementacją w języku Javascript.
 
@@ -432,7 +403,7 @@ Antyterroryści i terroryści w grze symulacyjnej posiadają zaimplementowaną m
             case 'follow entity': this.followEntity(); break;
             case 'follow path': this.followPath(); break;
             case 'follow extraction': this.followExtraction(); break;
-            case 'check direction': this.checkDirection(); break;
+            case 'check location': this.checkLocation(); break;
             case 'attack': this.attack(); break;
             default: this.changeToDefaultState(); break;
         }
@@ -455,7 +426,7 @@ Antyterroryści i terroryści w grze symulacyjnej posiadają zaimplementowaną m
             case 'init': this.setup(); break;
             case 'stand': this.stand(); break;
             case 'wander': this.wander(); break;
-            case 'check direction': this.checkDirection(); break;
+            case 'check location': this.checkLocation(); break;
             case 'attack': this.attack(); break;
             default: this.changeToDefaultState(); break;
         }
@@ -617,7 +588,7 @@ Parametr & Antyterrorysta & Terrorysta\\\hline
 	healthPoints (punkty życia) & 150 & 100\\\hline
 	reactionTimeMax (czas reakcji) & 20 & 25\\\hline
 	shootInterval (czas między strzałami) & 10 & 15\\\hline
-	checkDirectionTimeMax (czas na sprawdzenie kierunku) & 100 & 1000\\\hline
+	checkLocationTimeMax (czas na sprawdzenie lokacji) & 100 & 1000\\\hline
 	maxSpeed (maksymalna prędkość) & 0.025 & 0.020\\
 \hline
 \end{tabular}

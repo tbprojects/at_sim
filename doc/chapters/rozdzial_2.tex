@@ -68,7 +68,7 @@ ETAP 3 - Poruszanie się\\\hline
 \end{center}
 \end{table} 
 
-Czwarty etap implementacji projektu zakładał wprowadzenie elementu walki między jednostkami. Jednostka może zaatakować wrogą jednostkę wystrzeliwując pociski. Pociski trafiające w jednostkę zmniejszają jej liczbę punktów życia przeciw proporcjonalnie do odległości, jaką pokonał wystrzelony pocisk (symulacja utraty energii). Gdy liczba punktów życia danej jednostki spada poniżej zera, wtedy ta jednostka ginie. Ponadto postrzelona jednostka zwraca się z kierunku, z którego padł strzał, by móc się bronić. Jeżeli w walce polegnie lider antyterrorystów, to jego funkcję (prowadzenie grupy) przejmuje następny antyterrorysta. Dodatkowo w~tym etapie miały zostać zaimplementowane nowe funkcjonalności interfejsu, które pozwalają użytkownikowi na zapisywanie, usuwanie oraz wczytywanie wcześniej przygotowanej konfiguracji. Szczegóły zostały przedstawione w tabeli \ref{scenarios4}.
+Czwarty etap implementacji projektu zakładał wprowadzenie elementu walki między jednostkami. Jednostka może zaatakować wrogą jednostkę wystrzeliwując pociski. Pociski trafiające w jednostkę zmniejszają jej liczbę punktów życia przeciw proporcjonalnie do odległości, jaką pokonał wystrzelony pocisk (symulacja utraty energii). Gdy liczba punktów życia danej jednostki spada poniżej zera, wtedy ta jednostka ginie. Ponadto postrzelona jednostka próbuje podążać do lokacji, z której padł strzał. Jeżeli w walce polegnie lider antyterrorystów, to jego funkcję (prowadzenie grupy) przejmuje następny antyterrorysta. Dodatkowo w~tym etapie miały zostać zaimplementowane nowe funkcjonalności interfejsu, które pozwalają użytkownikowi na zapisywanie, usuwanie oraz wczytywanie wcześniej przygotowanej konfiguracji. Szczegóły zostały przedstawione w tabeli \ref{scenarios4}.
 
 \begin{table}
 \begin{center}
@@ -82,7 +82,7 @@ ETAP 4 - Odczyt / zapis oraz walka\\\hline
 		\item interfejs pozwala na wczytanie konfiguracji
 		\item jednostka może zaatakować wrogą jednostkę
 		\item jednostka może zginąć
-		\item zaatakowana jednostka sprawdza kierunek, z którego padł strzał
+		\item zaatakowana jednostka sprawdza lokację, z której padł strzał
 		\item antyterrorysta może zostać liderem, jeśli ten zginie
 	\end{itemize}
 \\\hline

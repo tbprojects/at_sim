@@ -61,7 +61,7 @@ Game.Bullet = Game.Entity.extend({
             if (['stand', 'wander'].indexOf(ter.currentState) == -1) continue;
             var distance = this.getVecPosition().distanceFrom(ter.getVecPosition());
             if (distance < this.attentionRange){
-                ter.setCheckDirection(this);
+                ter.setCheckLocation(this);
             }
         }
     },

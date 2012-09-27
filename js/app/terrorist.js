@@ -23,8 +23,8 @@ Game.Terrorist = Game.Entity.extend({
     standingTimeMax: 200,
     standingTime:-1,
 
-    checkDirectionTimeMax: 1000,
-    checkDirectionTime: 0,
+    checkLocationTimeMax: 1000,
+    checkLocationTime: 0,
 
     enemyName: 'antiterrorist',
 
@@ -42,7 +42,7 @@ Game.Terrorist = Game.Entity.extend({
             case 'init': this.setup(); break;
             case 'stand': this.stand(); break;
             case 'wander': this.wander(); break;
-            case 'check direction': this.checkDirection(); break;
+            case 'check location': this.checkLocation(); break;
             case 'attack': this.attack(); break;
             default: this.changeToDefaultState(); break;
         }
@@ -92,6 +92,6 @@ Game.Terrorist = Game.Entity.extend({
         return false;
     },
     _reactOnDamage: function(shooter){
-        this.setCheckDirection(shooter);
+        this.setCheckLocation(shooter);
     }
 });

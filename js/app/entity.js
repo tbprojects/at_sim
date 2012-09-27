@@ -26,8 +26,8 @@ Game.Entity = Kinetic.Image.extend(
 
     currentState: 'init',
 
-    checkDirectionTimeMax: 0,
-    checkDirectionTime: 0,
+    checkLocationTimeMax: 0,
+    checkLocationTime: 0,
 
     sightDistance: 200,
     enemyName: '',
@@ -264,22 +264,22 @@ Game.Entity = Kinetic.Image.extend(
         var endNode = Game.getNodeByPosition(x,y);
         this.path = astar.search(Game.map.graph.nodes, startNode, endNode, true);
     },
-    checkDirection: function(){
+    checkLocation: function(){
         var node = this.path[this.nodeIndex];
-        if (this.checkDirectionTime < 0 || !node ) {
+        if (this.checkLocationTime < 0 || !node ) {
             this.changeToDefaultState();
         } else {
             this.setTarget(node.x*Game.mapDensity,node.y*Game.mapDensity);
             if (this.arrived()) this.nodeIndex += 1;
-            this.checkDirectionTime -= 1;
+            this.checkLocationTime -= 1;
             this.seek();
         }
     },
-    setCheckDirection: function(entity){
+    setCheckLocation: function(entity){
         this.maxSpeed = this.MOVING;
-        this.checkDirectionTime = this.checkDirectionTimeMax;
+        this.checkLocationTime = this.checkLocationTimeMax;
         this.calculatePath(entity.getX(), entity.getY());
-        this.changeState('check direction');
+        this.changeState('check location');
     },
     _reactOnDamage: function(shooter){},
     _logDeath: function(){

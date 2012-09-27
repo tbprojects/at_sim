@@ -16,8 +16,8 @@ Game.Antiterrorist = Game.Entity.extend({
     isLeader: false,
     keypointIndex:0,
 
-    checkDirectionTimeMax: 100,
-    checkDirectionTime: 0,
+    checkLocationTimeMax: 100,
+    checkLocationTime: 0,
 
     enemyName: 'terrorist',
 
@@ -36,7 +36,7 @@ Game.Antiterrorist = Game.Entity.extend({
             case 'follow entity': this.followEntity(); break;
             case 'follow path': this.followPath(); break;
             case 'follow extraction': this.followExtraction(); break;
-            case 'check direction': this.checkDirection(); break;
+            case 'check location': this.checkLocation(); break;
             case 'attack': this.attack(); break;
             default: this.changeToDefaultState(); break;
         }
@@ -109,7 +109,7 @@ Game.Antiterrorist = Game.Entity.extend({
     },
     avoid:function(collisionPoint, wall){
         if (this.targetEntity) {
-            this.setCheckDirection(this.targetEntity);
+            this.setCheckLocation(this.targetEntity);
         }
     },
     changeToDefaultState: function(){
@@ -117,6 +117,6 @@ Game.Antiterrorist = Game.Entity.extend({
     },
     _reactOnDamage: function(shooter){
         this.reactionTime = 0;
-        this.setCheckDirection(shooter);
+        this.setCheckLocation(shooter);
     }
 });
